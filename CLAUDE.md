@@ -30,6 +30,7 @@ This is a Next.js 15 app router project for school administration dashboard. It 
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 - `npm run format` - Format code with Prettier
+- `npm run admin-claims` - Manage Firebase admin claims (see Admin Scripts section)
 
 ## Project Structure
 
@@ -97,6 +98,8 @@ src/
 3. All Firebase config is loaded from environment variables
 
 ### Required Environment Variables
+
+#### Firebase Client SDK (Web App)
 ```
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
@@ -106,10 +109,61 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
 NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 ```
 
+#### Firebase Admin SDK (Server-side Operations)
+```
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@project.iam.gserviceaccount.com
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+```
+
 ### Security Notes
 - Environment files (`.env*`) are gitignored for security
 - Firebase configuration includes validation to ensure all required variables are present
 - Use `NEXT_PUBLIC_` prefix for client-side accessible variables
+
+## Admin Scripts
+
+### Custom Claims Management
+
+A TypeScript script is provided to manage admin custom claims for users:
+
+```bash
+# Direct usage with npx ts-node
+npx ts-node --project tsconfig.scripts.json scripts/manage-admin-claims.ts set user@example.com school123
+npx ts-node --project tsconfig.scripts.json scripts/manage-admin-claims.ts remove user@example.com
+npx ts-node --project tsconfig.scripts.json scripts/manage-admin-claims.ts get user@example.com
+
+# Or using npm script (recommended - shorter and consistent)
+npm run admin-claims set user@example.com school123
+npm run admin-claims remove user@example.com
+npm run admin-claims get user@example.com
+```
+
+### Script Setup
+
+1. **Get Firebase Service Account Key:**
+   - Go to Firebase Console > Project Settings > Service Accounts
+   - Generate new private key
+   - Download the JSON file
+
+2. **Configure Environment Variables:**
+   - Extract `project_id`, `client_email`, and `private_key` from JSON
+   - Add to `.env.local` file:
+     ```
+     FIREBASE_PROJECT_ID=your_project_id
+     FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@project.iam.gserviceaccount.com  
+     FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+     ```
+
+3. **Scripts Location:**
+   - Scripts are stored in `/scripts` folder
+   - This folder is gitignored for security
+   - Contains admin utilities and setup scripts
+
+4. **TypeScript Configuration:**
+   - Scripts use `tsconfig.scripts.json` for proper TypeScript compilation
+   - Uses CommonJS modules for compatibility with ts-node
+   - No `any` types allowed - full type safety enforced
 
 ## Authentication & Authorization
 
