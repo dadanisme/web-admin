@@ -21,6 +21,7 @@ This is a Next.js 15 app router project for school administration dashboard. It 
 - **Development**: Turbopack for faster builds
 - **Backend**: Firebase (Firestore + Auth)
 - **Authentication**: Firebase Auth with Google Sign-In only
+- **Configuration**: Environment variables for Firebase config
 
 ## Development Commands
 
@@ -87,6 +88,28 @@ src/
 - ESLint is configured with Next.js rules
 - PostCSS is configured for Tailwind CSS processing
 - The project uses the latest React 19 with concurrent features
+
+## Environment Configuration
+
+### Setup
+1. Copy `.env.example` to `.env.local`
+2. Fill in your Firebase project configuration values
+3. All Firebase config is loaded from environment variables
+
+### Required Environment Variables
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+```
+
+### Security Notes
+- Environment files (`.env*`) are gitignored for security
+- Firebase configuration includes validation to ensure all required variables are present
+- Use `NEXT_PUBLIC_` prefix for client-side accessible variables
 
 ## Authentication & Authorization
 
