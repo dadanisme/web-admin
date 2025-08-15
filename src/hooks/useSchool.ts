@@ -20,7 +20,8 @@ export function useSchool(schoolId: string) {
         const schoolData = await SchoolService.getById(schoolId);
         setSchool(schoolData);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch school';
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to fetch school";
         setError(errorMessage);
       } finally {
         setLoading(false);
@@ -55,7 +56,7 @@ export function useSchoolStats(schoolId: string) {
       try {
         setLoading(true);
         setError(null);
-        
+
         const [teacherCount, pendingCount] = await Promise.all([
           SchoolService.getTeacherCount(schoolId),
           SchoolService.getPendingCount(),
@@ -63,7 +64,10 @@ export function useSchoolStats(schoolId: string) {
 
         setStats({ teacherCount, pendingCount });
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch school stats';
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch school stats";
         setError(errorMessage);
       } finally {
         setLoading(false);

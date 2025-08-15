@@ -10,9 +10,9 @@ function initializeFirebaseAdmin() {
 
   // Validate required environment variables
   const requiredEnvVars = [
-    'FIREBASE_PROJECT_ID',
-    'FIREBASE_CLIENT_EMAIL',
-    'FIREBASE_PRIVATE_KEY'
+    "FIREBASE_PROJECT_ID",
+    "FIREBASE_CLIENT_EMAIL",
+    "FIREBASE_PRIVATE_KEY",
   ];
 
   for (const envVar of requiredEnvVars) {
@@ -26,7 +26,7 @@ function initializeFirebaseAdmin() {
     credential: cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
     }),
     projectId: process.env.FIREBASE_PROJECT_ID,
   });

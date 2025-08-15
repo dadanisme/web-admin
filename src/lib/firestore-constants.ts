@@ -8,7 +8,7 @@ export const COLLECTIONS = {
 // Registration status values
 export const REGISTRATION_STATUS = {
   PENDING: "pending",
-  APPROVED: "approved", 
+  APPROVED: "approved",
   REJECTED: "rejected",
 } as const;
 
@@ -27,5 +27,6 @@ export const QUERY_LIMITS = {
   SMALL: 10,
 } as const;
 
-export type RegistrationStatus = typeof REGISTRATION_STATUS[keyof typeof REGISTRATION_STATUS];
-export type CollectionName = typeof COLLECTIONS[keyof typeof COLLECTIONS];
+export type RegistrationStatus =
+  (typeof REGISTRATION_STATUS)[keyof typeof REGISTRATION_STATUS];
+export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS];

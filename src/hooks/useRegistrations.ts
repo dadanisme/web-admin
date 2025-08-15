@@ -16,10 +16,13 @@ export function useRegistration(registrationId: string) {
     setLoading(true);
     setError(null);
 
-    const unsubscribe = RegistrationService.onSnapshot(registrationId, (data) => {
-      setRegistration(data);
-      setLoading(false);
-    });
+    const unsubscribe = RegistrationService.onSnapshot(
+      registrationId,
+      (data) => {
+        setRegistration(data);
+        setLoading(false);
+      }
+    );
 
     return unsubscribe;
   }, [registrationId]);
@@ -28,7 +31,10 @@ export function useRegistration(registrationId: string) {
     try {
       await RegistrationService.approve(registrationId, schoolId, approvedBy);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to approve registration';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to approve registration";
       setError(errorMessage);
       throw error;
     }
@@ -38,7 +44,10 @@ export function useRegistration(registrationId: string) {
     try {
       await RegistrationService.reject(registrationId, rejectedBy, reason);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to reject registration';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to reject registration";
       setError(errorMessage);
       throw error;
     }

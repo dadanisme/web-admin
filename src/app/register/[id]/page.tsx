@@ -20,10 +20,18 @@ export default function RegistrationApprovalPage() {
   const params = useParams();
   const registrationId = params.id as string;
   const { user: currentUser, adminClaims } = useAuth();
-  
-  const { registration, loading: regLoading, error: regError, approve, reject } = useRegistration(registrationId);
-  const { user: teacherUser, loading: userLoading } = useUser(registration?.userId || "");
-  
+
+  const {
+    registration,
+    loading: regLoading,
+    error: regError,
+    approve,
+    reject,
+  } = useRegistration(registrationId);
+  const { user: teacherUser, loading: userLoading } = useUser(
+    registration?.userId || ""
+  );
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -35,11 +43,14 @@ export default function RegistrationApprovalPage() {
 
     setIsProcessing(true);
     setActionError(null);
-    
+
     try {
       await approve(adminClaims.schoolId, currentUser.uid);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to approve registration";
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to approve registration";
       setActionError(errorMessage);
     } finally {
       setIsProcessing(false);
@@ -54,11 +65,14 @@ export default function RegistrationApprovalPage() {
 
     setIsProcessing(true);
     setActionError(null);
-    
+
     try {
       await reject(currentUser.uid, "Rejected by admin");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to reject registration";
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to reject registration";
       setActionError(errorMessage);
     } finally {
       setIsProcessing(false);
@@ -90,7 +104,8 @@ export default function RegistrationApprovalPage() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground text-center">
-                Please check the link or contact the teacher for a new registration link.
+                Please check the link or contact the teacher for a new
+                registration link.
               </p>
             </CardContent>
           </Card>
@@ -99,7 +114,8 @@ export default function RegistrationApprovalPage() {
     );
   }
 
-  const isAlreadyProcessed = registration.status !== REGISTRATION_STATUS.PENDING;
+  const isAlreadyProcessed =
+    registration.status !== REGISTRATION_STATUS.PENDING;
 
   return (
     <AuthGuard requireAdmin>
@@ -134,10 +150,12 @@ export default function RegistrationApprovalPage() {
                       Name
                     </label>
                     <p className="text-sm">
-                      {teacherUser?.displayName || registration.userName || "Not provided"}
+                      {teacherUser?.displayName ||
+                        registration.userName ||
+                        "Not provided"}
                     </p>
                   </div>
-                  
+
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">
                       Email
@@ -146,16 +164,14 @@ export default function RegistrationApprovalPage() {
                       {teacherUser?.email || registration.userEmail}
                     </p>
                   </div>
-                  
+
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">
                       User ID
                     </label>
-                    <p className="text-sm font-mono">
-                      {registration.userId}
-                    </p>
+                    <p className="text-sm font-mono">{registration.userId}</p>
                   </div>
-                  
+
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">
                       Registration Date
@@ -171,9 +187,7 @@ export default function RegistrationApprovalPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Registration Status</CardTitle>
-                  <CardDescription>
-                    Current status and actions
-                  </CardDescription>
+                  <CardDescription>Current status and actions</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -181,13 +195,16 @@ export default function RegistrationApprovalPage() {
                       Status
                     </label>
                     <div className="flex items-center gap-2 mt-1">
-                      <div className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        registration.status === REGISTRATION_STATUS.PENDING 
-                          ? "bg-yellow-100 text-yellow-800" 
-                          : registration.status === REGISTRATION_STATUS.APPROVED
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}>
+                      <div
+                        className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                          registration.status === REGISTRATION_STATUS.PENDING
+                            ? "bg-yellow-100 text-yellow-800"
+                            : registration.status ===
+                                REGISTRATION_STATUS.APPROVED
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                        }`}
+                      >
                         {registration.status || "pending"}
                       </div>
                     </div>
@@ -231,9 +248,7 @@ export default function RegistrationApprovalPage() {
                       <label className="text-sm font-medium text-muted-foreground">
                         Rejection Reason
                       </label>
-                      <p className="text-sm">
-                        {registration.rejectionReason}
-                      </p>
+                      <p className="text-sm">{registration.rejectionReason}</p>
                     </div>
                   )}
                 </CardContent>
@@ -264,7 +279,7 @@ export default function RegistrationApprovalPage() {
                     >
                       {isProcessing ? "Processing..." : "Approve Registration"}
                     </Button>
-                    
+
                     <Button
                       onClick={handleReject}
                       disabled={isProcessing}
@@ -276,7 +291,8 @@ export default function RegistrationApprovalPage() {
                   </div>
 
                   <p className="text-xs text-muted-foreground mt-4">
-                    Approving will assign this teacher to your school: {adminClaims?.schoolId}
+                    Approving will assign this teacher to your school:{" "}
+                    {adminClaims?.schoolId}
                   </p>
                 </CardContent>
               </Card>
@@ -288,9 +304,7 @@ export default function RegistrationApprovalPage() {
                   <div className="text-center">
                     <p className="text-muted-foreground">
                       This registration has already been{" "}
-                      <span className="font-medium">
-                        {registration.status}
-                      </span>
+                      <span className="font-medium">{registration.status}</span>
                       .
                     </p>
                   </div>

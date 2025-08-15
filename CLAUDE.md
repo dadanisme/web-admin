@@ -93,6 +93,7 @@ src/
 ## Environment Configuration
 
 ### Setup
+
 1. Copy `.env.example` to `.env.local`
 2. Fill in your Firebase project configuration values
 3. All Firebase config is loaded from environment variables
@@ -100,6 +101,7 @@ src/
 ### Required Environment Variables
 
 #### Firebase Client SDK (Web App)
+
 ```
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
@@ -110,6 +112,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 ```
 
 #### Firebase Admin SDK (Server-side Operations)
+
 ```
 FIREBASE_PROJECT_ID=your_project_id
 FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@project.iam.gserviceaccount.com
@@ -117,6 +120,7 @@ FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY----
 ```
 
 ### Security Notes
+
 - Environment files (`.env*`) are gitignored for security
 - Firebase configuration includes validation to ensure all required variables are present
 - Use `NEXT_PUBLIC_` prefix for client-side accessible variables
@@ -151,7 +155,7 @@ npm run admin-claims get user@example.com
    - Add to `.env.local` file:
      ```
      FIREBASE_PROJECT_ID=your_project_id
-     FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@project.iam.gserviceaccount.com  
+     FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@project.iam.gserviceaccount.com
      FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
      ```
 

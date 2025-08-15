@@ -7,7 +7,8 @@ export const ROUTES = {
 } as const;
 
 // Dynamic route helpers
-export const createRegisterPath = (registrationId: string) => `/register/${registrationId}`;
+export const createRegisterPath = (registrationId: string) =>
+  `/register/${registrationId}`;
 export const createInvitePath = () => "/invite";
 
 export type RouteKey = keyof typeof ROUTES;

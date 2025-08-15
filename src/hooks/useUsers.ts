@@ -20,7 +20,8 @@ export function useUser(userId: string) {
         const userData = await UserService.getById(userId);
         setUser(userData);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch user';
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to fetch user";
         setError(errorMessage);
       } finally {
         setLoading(false);
@@ -55,7 +56,8 @@ export function useUserByEmail(email: string) {
         const userData = await UserService.getByEmail(email);
         setUser(userData);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch user';
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to fetch user";
         setError(errorMessage);
       } finally {
         setLoading(false);
@@ -90,7 +92,8 @@ export function useSchoolUsers(schoolId: string) {
         const userData = await UserService.getBySchoolId(schoolId);
         setUsers(userData);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch users';
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to fetch users";
         setError(errorMessage);
       } finally {
         setLoading(false);
