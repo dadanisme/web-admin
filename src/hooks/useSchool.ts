@@ -59,7 +59,7 @@ export function useSchoolStats(schoolId: string) {
 
         const [teacherCount, pendingCount] = await Promise.all([
           SchoolService.getTeacherCount(schoolId),
-          SchoolService.getPendingCount(),
+          SchoolService.getPendingCount(schoolId),
         ]);
 
         setStats({ teacherCount, pendingCount });

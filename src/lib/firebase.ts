@@ -39,7 +39,7 @@ function createFirebaseConfig() {
 
   // Check if any config values are undefined
   const undefinedValues = Object.entries(config).filter(
-    ([key, value]) => value === undefined
+    ([, value]) => value === undefined
   );
   if (undefinedValues.length > 0) {
     console.warn(
