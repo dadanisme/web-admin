@@ -74,6 +74,20 @@ export class RegistrationService {
     return queryToData<Registration>(snapshot);
   }
 
+  // Get pending registrations by school ID
+  static async getPendingBySchoolId(schoolId: string): Promise<Registration[]> {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const q = query(
+      collection(db, COLLECTIONS.REGISTRATIONS),
+      where("status", "==", REGISTRATION_STATUS.PENDING),
+      where("schoolId", "==", schoolId),
+      orderBy("createdAt", "desc")
+    );
+    const snapshot = await getDocs(q);
+    return queryToData<Registration>(snapshot);
+  }
+
   // Create new registration
   static async create(data: CreateRegistrationData): Promise<string> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
@@ -84,6 +98,20 @@ export class RegistrationService {
       updatedAt: serverTimestamp(),
     });
     return docRef.id;
+  }
+
+  // Get registration by email
+  static async getByEmail(email: string): Promise<Registration | null> {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const q = query(
+      collection(db, COLLECTIONS.REGISTRATIONS),
+      where("userEmail", "==", email),
+      limit(1)
+    );
+    const snapshot = await getDocs(q);
+    const registrations = queryToData<Registration>(snapshot);
+    return registrations[0] || null;
   }
 
   // Approve registration and assign user to school
@@ -190,8 +218,7 @@ export class UserService {
 
     const q = query(
       collection(db, COLLECTIONS.USERS),
-      where("schoolId", "==", schoolId),
-      orderBy("createdAt", "desc")
+      where("schoolId", "==", schoolId)
     );
     const snapshot = await getDocs(q);
     return queryToData<User>(snapshot);
@@ -251,10 +278,11 @@ export class SchoolService {
   }
 
   // Get pending registration count for school
-  static async getPendingCount(): Promise<number> {
+  static async getPendingCount(schoolId: string): Promise<number> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
-    const registrations = await RegistrationService.getPending();
+    const registrations =
+      await RegistrationService.getPendingBySchoolId(schoolId);
     return registrations.length;
   }
 }

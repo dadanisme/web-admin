@@ -2,6 +2,7 @@
 
 import { AuthGuard } from "@/components/auth-guard";
 import { useAuth } from "@/contexts/auth-context";
+import { useSchoolStats } from "@/hooks/useSchoolStats";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,9 +11,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import { ROUTES } from "@/lib/paths";
 
 export default function Home() {
   const { user, adminClaims, logout } = useAuth();
+  const {
+    stats,
+    loading: statsLoading,
+    error: statsError,
+  } = useSchoolStats(adminClaims?.schoolId);
 
   return (
     <AuthGuard requireAdmin>
@@ -40,16 +49,33 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Pending Registrations</CardTitle>
+                  <CardTitle>Pending Invitations</CardTitle>
                   <CardDescription>
-                    Teachers waiting for approval
+                    Teachers invited but not yet logged in
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">0</div>
-                  <p className="text-xs text-muted-foreground">
-                    No pending registrations
-                  </p>
+                  {statsLoading ? (
+                    <div className="space-y-2">
+                      <Skeleton className="h-6 w-16" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                  ) : statsError ? (
+                    <div className="text-sm text-destructive">
+                      Error loading data
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-2xl font-bold">
+                        {stats.pendingInvitations}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {stats.pendingInvitations === 0
+                          ? "No pending invitations"
+                          : `${stats.pendingInvitations} teacher${stats.pendingInvitations === 1 ? "" : "s"} waiting to log in`}
+                      </p>
+                    </>
+                  )}
                 </CardContent>
               </Card>
 
@@ -61,10 +87,27 @@ export default function Home() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">0</div>
-                  <p className="text-xs text-muted-foreground">
-                    No active teachers yet
-                  </p>
+                  {statsLoading ? (
+                    <div className="space-y-2">
+                      <Skeleton className="h-6 w-16" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                  ) : statsError ? (
+                    <div className="text-sm text-destructive">
+                      Error loading data
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-2xl font-bold">
+                        {stats.activeTeachers}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {stats.activeTeachers === 0
+                          ? "No active teachers yet"
+                          : `${stats.activeTeachers} teacher${stats.activeTeachers === 1 ? "" : "s"} in your school`}
+                      </p>
+                    </>
+                  )}
                 </CardContent>
               </Card>
 
@@ -88,19 +131,13 @@ export default function Home() {
                   <CardDescription>Common administrative tasks</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Button className="w-full md:w-auto" disabled>
-                    View Pending Registrations
-                  </Button>
                   <Button
+                    asChild
                     variant="outline"
-                    className="w-full md:w-auto ml-0 md:ml-2"
-                    disabled
+                    className="w-full md:w-auto"
                   >
-                    Invite Teacher by Email
+                    <Link href={ROUTES.INVITE}>Invite Teacher by Email</Link>
                   </Button>
-                  <p className="text-xs text-muted-foreground/80">
-                    Features will be available once implemented
-                  </p>
                 </CardContent>
               </Card>
             </div>
