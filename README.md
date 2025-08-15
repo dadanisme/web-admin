@@ -66,6 +66,7 @@ A Next.js 15 web application for managing teacher registrations and school assig
 ### Setup Steps
 
 1. **Clone and install dependencies**
+
    ```bash
    git clone <repository-url>
    cd web-admin
@@ -73,11 +74,13 @@ A Next.js 15 web application for managing teacher registrations and school assig
    ```
 
 2. **Environment Configuration**
+
    ```bash
    cp .env.example .env.local
    ```
-   
+
    Fill in your Firebase configuration in `.env.local`:
+
    ```env
    # Firebase Client SDK (Web App)
    NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
@@ -273,10 +276,10 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-    
+
     // Admins can manage registrations for their school
     match /registrations/{registrationId} {
-      allow read, write: if request.auth != null 
+      allow read, write: if request.auth != null
         && request.auth.token.admin == true;
     }
   }

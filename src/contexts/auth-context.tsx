@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!auth) return;
-    
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
 
@@ -47,8 +47,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
-    if (!auth || !googleProvider) throw new Error("Firebase auth not initialized");
-    
+    if (!auth || !googleProvider)
+      throw new Error("Firebase auth not initialized");
+
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
@@ -59,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     if (!auth) throw new Error("Firebase auth not initialized");
-    
+
     try {
       await signOut(auth);
     } catch (error) {
