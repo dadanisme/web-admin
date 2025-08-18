@@ -19,7 +19,7 @@ This is a Next.js 15 app router project for school administration dashboard. It 
 - **Icons**: Lucide React
 - **TypeScript**: Yes (strict mode enabled)
 - **Development**: Turbopack for faster builds
-- **Backend**: Firebase (Firestore + Auth)
+- **Backend**: Firebase (Firestore + Auth + Cloud Functions)
 - **Authentication**: Firebase Auth with Google Sign-In only
 - **Configuration**: Environment variables for Firebase config
 
@@ -32,6 +32,13 @@ This is a Next.js 15 app router project for school administration dashboard. It 
 - `npm run format` - Format code with Prettier
 - `npm run admin-claims` - Manage Firebase admin claims (see Admin Scripts section)
 
+### Firebase Functions Commands
+
+- `cd functions && npm run build` - Build Firebase functions
+- `cd functions && npm run serve` - Start local Firebase emulator
+- `cd functions && npm run deploy` - Deploy functions to Firebase
+- `cd functions && npm run logs` - View function logs
+
 ## Project Structure
 
 ```
@@ -42,6 +49,19 @@ src/
 │   └── page.tsx        # Home page
 └── lib/
     └── utils.ts        # Utility functions (cn helper)
+
+functions/
+├── src/
+│   ├── index.ts        # Functions entry point
+│   ├── config/
+│   │   └── firebase.ts # Firebase Admin initialization
+│   ├── helpers/
+│   │   └── registration-sync.ts # Database operation helpers
+│   └── users/
+│       ├── helpers.ts          # User-specific helpers
+│       └── onUserSchoolUpdate.ts # User update triggers
+├── package.json        # Functions dependencies
+└── tsconfig.json      # Functions TypeScript config
 ```
 
 ## shadcn/ui Configuration
@@ -227,7 +247,7 @@ registrations/{registrationId}
 
 1. Admin invites teacher by email address
 2. If email not in users collection, create registration entry
-3. When invited user logs into iOS app, auto-assign to school
+3. When invited user logs into iOS app, auto-assign to school (handled by Cloud Function)
 
 ### Data Access Rules
 
@@ -256,3 +276,28 @@ All routes are defined in `src/lib/paths.ts` as the `ROUTES` constant to avoid h
 - **Teacher Invitation**: Invite teachers by email address
 - **Authentication Guard**: Verify admin claims on protected routes
 - **School-Scoped Access**: Only show data for admin's assigned school
+- **Auto-School Assignment**: Cloud Function automatically syncs schoolId to registrations when users login
+
+## Firebase Cloud Functions
+
+### onUserUpdated Function
+
+**Purpose**: Automatically syncs schoolId from user documents to their registrations when a user is assigned to a school.
+
+**Trigger**: `onDocumentUpdated("users/{userId}")`
+
+**Behavior**:
+- Listens for changes to user documents
+- Detects when `schoolId` field is added or modified
+- Finds all registrations for that user
+- Updates all registrations with the new `schoolId`
+- Logs the sync operation for monitoring
+
+**Use Case**: When a teacher logs into the iOS app after being invited, their user document gets updated with a `schoolId`. This function ensures their existing registration records are automatically updated to reflect the school assignment.
+
+**Structure**:
+- Main function: `syncUserSchoolToRegistrations()` - Contains business logic
+- Trigger function: `onUserUpdated()` - Firebase trigger wrapper
+- Helper functions: Database query and batch update operations
+
+**Location**: `functions/src/users/onUserSchoolUpdate.ts`
