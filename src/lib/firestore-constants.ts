@@ -3,6 +3,7 @@ export const COLLECTIONS = {
   USERS: "users",
   REGISTRATIONS: "registrations",
   SCHOOLS: "schools",
+  STUDENTS: "students",
 } as const;
 
 // Registration status values
