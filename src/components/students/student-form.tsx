@@ -38,8 +38,9 @@ export function StudentForm({
   student,
   onSuccess,
 }: StudentFormProps) {
-  const { createStudent, updateStudent, loading, error } = useStudentMutations(schoolId);
-  
+  const { createStudent, updateStudent, loading, error } =
+    useStudentMutations(schoolId);
+
   const form = useForm<StudentFormData>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
@@ -81,9 +82,7 @@ export function StudentForm({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {student ? "Edit Student" : "Add Student"}
-          </DialogTitle>
+          <DialogTitle>{student ? "Edit Student" : "Add Student"}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -107,9 +106,7 @@ export function StudentForm({
             />
 
             {error && (
-              <div className="text-sm text-destructive mt-2">
-                {error}
-              </div>
+              <div className="text-sm text-destructive mt-2">{error}</div>
             )}
 
             <div className="flex gap-2 justify-end pt-4">

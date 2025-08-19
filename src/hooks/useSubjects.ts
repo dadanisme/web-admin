@@ -48,9 +48,7 @@ export function useSubjectMutations(schoolId: string) {
       return result;
     } catch (error) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to create subject";
+        error instanceof Error ? error.message : "Failed to create subject";
       setError(errorMessage);
       throw error;
     } finally {
@@ -58,16 +56,17 @@ export function useSubjectMutations(schoolId: string) {
     }
   };
 
-  const updateSubject = async (subjectId: string, data: Partial<CreateSubjectData>) => {
+  const updateSubject = async (
+    subjectId: string,
+    data: Partial<CreateSubjectData>
+  ) => {
     try {
       setLoading(true);
       setError(null);
       await SubjectService.update(schoolId, subjectId, data);
     } catch (error) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to update subject";
+        error instanceof Error ? error.message : "Failed to update subject";
       setError(errorMessage);
       throw error;
     } finally {
@@ -82,9 +81,7 @@ export function useSubjectMutations(schoolId: string) {
       await SubjectService.delete(schoolId, subjectId);
     } catch (error) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to delete subject";
+        error instanceof Error ? error.message : "Failed to delete subject";
       setError(errorMessage);
       throw error;
     } finally {

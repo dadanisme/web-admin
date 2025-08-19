@@ -4,6 +4,11 @@ export { UserService } from "./user.service";
 export { SchoolService } from "./school.service";
 export { StudentService, type CreateStudentData } from "./student.service";
 export { SubjectService, type CreateSubjectData } from "./subject.service";
+export {
+  DefaultExamService,
+  type CreateDefaultExamData,
+} from "./default-exam.service";
+export { ExamService, type CreateExamData } from "./exam.service";
 
 // Re-export types for convenience
 export type {
@@ -14,4 +19,4 @@ export type {
   CreateUserData,
   CreateSchoolData,
 } from "@/types";
-export type { Student, Subject } from "@/types/school";
+export type { Student, Subject, Exam } from "@/types/school";

@@ -55,7 +55,9 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-card sm:bg-background p-4">
       <Card className="w-full max-w-md mx-4 sm:mx-0 border-0 shadow-none sm:border sm:shadow-sm bg-transparent sm:bg-card">
         <CardHeader className="text-center space-y-2 p-4 sm:p-6">
-          <CardTitle className="text-xl sm:text-2xl font-bold">Admin Login</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl font-bold">
+            Admin Login
+          </CardTitle>
           <CardDescription className="text-sm sm:text-base leading-relaxed">
             Sign in with your Google account to access the admin dashboard
           </CardDescription>
@@ -98,7 +100,9 @@ export default function LoginPage() {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                <span className="text-sm sm:text-base">Continue with Google</span>
+                <span className="text-sm sm:text-base">
+                  Continue with Google
+                </span>
               </div>
             )}
           </Button>

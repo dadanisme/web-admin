@@ -292,6 +292,7 @@ All routes are defined in `src/lib/paths.ts` as the `ROUTES` constant to avoid h
 **Trigger**: `onDocumentUpdated("users/{userId}")`
 
 **Behavior**:
+
 - Listens for changes to user documents
 - Detects when `schoolId` field is added or modified
 - Finds all registrations for that user
@@ -301,6 +302,7 @@ All routes are defined in `src/lib/paths.ts` as the `ROUTES` constant to avoid h
 **Use Case**: When a teacher logs into the iOS app after being invited, their user document gets updated with a `schoolId`. This function ensures their existing registration records are automatically updated to reflect the school assignment.
 
 **Structure**:
+
 - Main function: `syncUserSchoolToRegistrations()` - Contains business logic
 - Trigger function: `onUserUpdated()` - Firebase trigger wrapper
 - Helper functions: Database query and batch update operations

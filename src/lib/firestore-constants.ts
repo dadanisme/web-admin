@@ -5,6 +5,8 @@ export const COLLECTIONS = {
   SCHOOLS: "schools",
   STUDENTS: "students",
   SUBJECTS: "subjects",
+  DEFAULT_EXAMS: "defaultExams",
+  EXAMS: "exams",
 } as const;
 
 // Registration status values

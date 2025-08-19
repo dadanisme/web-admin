@@ -14,9 +14,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, BookOpen } from "lucide-react";
+import Link from "next/link";
 import { SubjectForm } from "./subject-form";
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog";
+import { createSubjectExamsPath } from "@/lib/paths";
 
 interface SubjectListProps {
   schoolId: string;
@@ -24,8 +26,9 @@ interface SubjectListProps {
 
 export function SubjectList({ schoolId }: SubjectListProps) {
   const { subjects, loading, error } = useSubjects(schoolId);
-  const { deleteSubject, loading: mutationLoading } = useSubjectMutations(schoolId);
-  
+  const { deleteSubject, loading: mutationLoading } =
+    useSubjectMutations(schoolId);
+
   const [showForm, setShowForm] = useState(false);
   const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -91,7 +94,9 @@ export function SubjectList({ schoolId }: SubjectListProps) {
           <CardTitle>Subjects</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-destructive">Error loading subjects: {error}</div>
+          <div className="text-destructive">
+            Error loading subjects: {error}
+          </div>
         </CardContent>
       </Card>
     );
@@ -124,12 +129,21 @@ export function SubjectList({ schoolId }: SubjectListProps) {
               <TableBody>
                 {subjects.map((subject) => (
                   <TableRow key={subject.id}>
-                    <TableCell className="font-medium">{subject.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {subject.name}
+                    </TableCell>
                     <TableCell>
-                      {subject.createdAt?.toDate().toLocaleDateString() || "Unknown"}
+                      {subject.createdAt?.toDate().toLocaleDateString() ||
+                        "Unknown"}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex gap-2 justify-end">
+                        <Button asChild variant="outline" size="sm">
+                          <Link href={createSubjectExamsPath(subject.id)}>
+                            <BookOpen className="h-4 w-4 mr-2" />
+                            Exams
+                          </Link>
+                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
@@ -141,7 +155,9 @@ export function SubjectList({ schoolId }: SubjectListProps) {
                           variant="destructive"
                           size="sm"
                           onClick={() => handleDeleteClick(subject)}
-                          disabled={deletingId === subject.id || mutationLoading}
+                          disabled={
+                            deletingId === subject.id || mutationLoading
+                          }
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

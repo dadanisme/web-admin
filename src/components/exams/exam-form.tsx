@@ -3,9 +3,9 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Subject } from "@/types/school";
-import { useSubjectMutations } from "@/hooks/useSubjects";
-import { subjectSchema, type SubjectFormData } from "@/lib/validations";
+import { Exam } from "@/types/school";
+import { useExamMutations } from "@/hooks/useExams";
+import { examSchema, type ExamFormData } from "@/lib/validations";
 import {
   Dialog,
   DialogContent,
@@ -23,37 +23,41 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-interface SubjectFormProps {
+interface ExamFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   schoolId: string;
-  subject?: Subject | null;
+  subjectId: string;
+  exam?: Exam | null;
   onSuccess: () => void;
 }
 
-export function SubjectForm({
+export function ExamForm({
   open,
   onOpenChange,
   schoolId,
-  subject,
+  subjectId,
+  exam,
   onSuccess,
-}: SubjectFormProps) {
-  const { createSubject, updateSubject, loading, error } =
-    useSubjectMutations(schoolId);
+}: ExamFormProps) {
+  const { createExam, updateExam, loading, error } = useExamMutations(
+    schoolId,
+    subjectId
+  );
 
-  const form = useForm<SubjectFormData>({
-    resolver: zodResolver(subjectSchema),
+  const form = useForm<ExamFormData>({
+    resolver: zodResolver(examSchema),
     defaultValues: {
       name: "",
     },
   });
 
-  // Reset form when opening/closing or when subject changes
+  // Reset form when opening/closing or when exam changes
   useEffect(() => {
     if (open) {
-      if (subject) {
+      if (exam) {
         form.reset({
-          name: subject.name,
+          name: exam.name,
         });
       } else {
         form.reset({
@@ -61,14 +65,14 @@ export function SubjectForm({
         });
       }
     }
-  }, [open, subject, form]);
+  }, [open, exam, form]);
 
-  const onSubmit = async (data: SubjectFormData) => {
+  const onSubmit = async (data: ExamFormData) => {
     try {
-      if (subject) {
-        await updateSubject(subject.id, data);
+      if (exam) {
+        await updateExam(exam.id, data);
       } else {
-        await createSubject(data);
+        await createExam(data);
       }
       onSuccess();
       form.reset();
@@ -82,7 +86,7 @@ export function SubjectForm({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{subject ? "Edit Subject" : "Add Subject"}</DialogTitle>
+          <DialogTitle>{exam ? "Edit Exam" : "Add Exam"}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -95,7 +99,7 @@ export function SubjectForm({
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter subject name"
+                      placeholder="Enter exam name"
                       {...field}
                       disabled={loading}
                     />
@@ -119,7 +123,7 @@ export function SubjectForm({
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? "Saving..." : subject ? "Update" : "Create"}
+                {loading ? "Saving..." : exam ? "Update" : "Create"}
               </Button>
             </div>
           </form>

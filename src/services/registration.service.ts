@@ -15,10 +15,7 @@ import {
   QuerySnapshot,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import {
-  Registration,
-  CreateRegistrationData,
-} from "@/types";
+import { Registration, CreateRegistrationData } from "@/types";
 import {
   COLLECTIONS,
   REGISTRATION_STATUS,

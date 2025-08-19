@@ -48,9 +48,7 @@ export function useStudentMutations(schoolId: string) {
       return result;
     } catch (error) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to create student";
+        error instanceof Error ? error.message : "Failed to create student";
       setError(errorMessage);
       throw error;
     } finally {
@@ -58,16 +56,17 @@ export function useStudentMutations(schoolId: string) {
     }
   };
 
-  const updateStudent = async (studentId: string, data: Partial<CreateStudentData>) => {
+  const updateStudent = async (
+    studentId: string,
+    data: Partial<CreateStudentData>
+  ) => {
     try {
       setLoading(true);
       setError(null);
       await StudentService.update(schoolId, studentId, data);
     } catch (error) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to update student";
+        error instanceof Error ? error.message : "Failed to update student";
       setError(errorMessage);
       throw error;
     } finally {
@@ -82,9 +81,7 @@ export function useStudentMutations(schoolId: string) {
       await StudentService.delete(schoolId, studentId);
     } catch (error) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to delete student";
+        error instanceof Error ? error.message : "Failed to delete student";
       setError(errorMessage);
       throw error;
     } finally {

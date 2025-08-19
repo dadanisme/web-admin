@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Student } from "@/types/school";
-import { useStudents, useStudentMutations } from "@/hooks/useStudents";
+import { Exam } from "@/types/school";
+import {
+  useDefaultExams,
+  useDefaultExamMutations,
+} from "@/hooks/useDefaultExams";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,44 +18,44 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Edit, Trash2 } from "lucide-react";
-import { StudentForm } from "./student-form";
+import { DefaultExamForm } from "./default-exam-form";
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog";
 
-interface StudentListProps {
+interface DefaultExamListProps {
   schoolId: string;
 }
 
-export function StudentList({ schoolId }: StudentListProps) {
-  const { students, loading, error } = useStudents(schoolId);
-  const { deleteStudent, loading: mutationLoading } =
-    useStudentMutations(schoolId);
+export function DefaultExamList({ schoolId }: DefaultExamListProps) {
+  const { defaultExams, loading, error } = useDefaultExams(schoolId);
+  const { deleteDefaultExam, loading: mutationLoading } =
+    useDefaultExamMutations(schoolId);
 
   const [showForm, setShowForm] = useState(false);
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const [editingExam, setEditingExam] = useState<Exam | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
+  const [examToDelete, setExamToDelete] = useState<Exam | null>(null);
 
-  const handleEdit = (student: Student) => {
-    setEditingStudent(student);
+  const handleEdit = (exam: Exam) => {
+    setEditingExam(exam);
     setShowForm(true);
   };
 
-  const handleDeleteClick = (student: Student) => {
-    setStudentToDelete(student);
+  const handleDeleteClick = (exam: Exam) => {
+    setExamToDelete(exam);
     setShowDeleteDialog(true);
   };
 
   const handleDeleteConfirm = async () => {
-    if (!studentToDelete) return;
+    if (!examToDelete) return;
 
     try {
-      setDeletingId(studentToDelete.id);
-      await deleteStudent(studentToDelete.id);
+      setDeletingId(examToDelete.id);
+      await deleteDefaultExam(examToDelete.id);
       setShowDeleteDialog(false);
-      setStudentToDelete(null);
+      setExamToDelete(null);
     } catch (error) {
-      console.error("Failed to delete student:", error);
+      console.error("Failed to delete default exam:", error);
     } finally {
       setDeletingId(null);
     }
@@ -60,19 +63,19 @@ export function StudentList({ schoolId }: StudentListProps) {
 
   const handleDeleteCancel = () => {
     setShowDeleteDialog(false);
-    setStudentToDelete(null);
+    setExamToDelete(null);
   };
 
   const handleFormClose = () => {
     setShowForm(false);
-    setEditingStudent(null);
+    setEditingExam(null);
   };
 
   if (loading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Students</CardTitle>
+          <CardTitle>Default Exams</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -89,11 +92,11 @@ export function StudentList({ schoolId }: StudentListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Students</CardTitle>
+          <CardTitle>Default Exams</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-destructive">
-            Error loading students: {error}
+            Error loading default exams: {error}
           </div>
         </CardContent>
       </Card>
@@ -104,16 +107,17 @@ export function StudentList({ schoolId }: StudentListProps) {
     <>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Students ({students.length})</CardTitle>
+          <CardTitle>Default Exams ({defaultExams.length})</CardTitle>
           <Button onClick={() => setShowForm(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Student
+            Add Default Exam
           </Button>
         </CardHeader>
         <CardContent>
-          {students.length === 0 ? (
+          {defaultExams.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              No students found. Add your first student to get started.
+              No default exams found. Add your first default exam template to
+              get started.
             </div>
           ) : (
             <Table>
@@ -125,13 +129,11 @@ export function StudentList({ schoolId }: StudentListProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {students.map((student) => (
-                  <TableRow key={student.id}>
-                    <TableCell className="font-medium">
-                      {student.name}
-                    </TableCell>
+                {defaultExams.map((exam) => (
+                  <TableRow key={exam.id}>
+                    <TableCell className="font-medium">{exam.name}</TableCell>
                     <TableCell>
-                      {student.createdAt?.toDate().toLocaleDateString() ||
+                      {exam.createdAt?.toDate().toLocaleDateString() ||
                         "Unknown"}
                     </TableCell>
                     <TableCell className="text-right">
@@ -139,17 +141,15 @@ export function StudentList({ schoolId }: StudentListProps) {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleEdit(student)}
+                          onClick={() => handleEdit(exam)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => handleDeleteClick(student)}
-                          disabled={
-                            deletingId === student.id || mutationLoading
-                          }
+                          onClick={() => handleDeleteClick(exam)}
+                          disabled={deletingId === exam.id || mutationLoading}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -163,11 +163,11 @@ export function StudentList({ schoolId }: StudentListProps) {
         </CardContent>
       </Card>
 
-      <StudentForm
+      <DefaultExamForm
         open={showForm}
         onOpenChange={handleFormClose}
         schoolId={schoolId}
-        student={editingStudent}
+        exam={editingExam}
         onSuccess={handleFormClose}
       />
 
@@ -175,10 +175,10 @@ export function StudentList({ schoolId }: StudentListProps) {
         open={showDeleteDialog}
         onOpenChange={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
-        title="Delete Student"
+        title="Delete Default Exam"
         description={
-          studentToDelete
-            ? `Are you sure you want to delete "${studentToDelete.name}"? This action cannot be undone.`
+          examToDelete
+            ? `Are you sure you want to delete "${examToDelete.name}"? This action cannot be undone.`
             : ""
         }
         isLoading={!!deletingId}

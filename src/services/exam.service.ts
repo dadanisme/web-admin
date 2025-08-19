@@ -14,10 +14,9 @@ import {
   QuerySnapshot,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Subject } from "@/types/school";
+import { Exam } from "@/types/school";
 import { COLLECTIONS, FIRESTORE_ERRORS } from "@/lib/firestore-constants";
 
-// Helper to convert Firestore document to typed object
 function docToData<T>(doc: DocumentSnapshot): T | null {
   if (!doc.exists()) return null;
   return { id: doc.id, ...doc.data() } as T;
@@ -27,14 +26,15 @@ function queryToData<T>(snapshot: QuerySnapshot): T[] {
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as T);
 }
 
-export type CreateSubjectData = Omit<Subject, "id" | "createdAt" | "updatedAt">;
+export type CreateExamData = Omit<Exam, "id" | "createdAt" | "updatedAt">;
 
-export class SubjectService {
-  // Get subject by ID within a school
+export class ExamService {
+  // Get exam by ID within a school's subject
   static async getById(
     schoolId: string,
-    subjectId: string
-  ): Promise<Subject | null> {
+    subjectId: string,
+    examId: string
+  ): Promise<Exam | null> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
     const docRef = doc(
@@ -42,33 +42,53 @@ export class SubjectService {
       COLLECTIONS.SCHOOLS,
       schoolId,
       COLLECTIONS.SUBJECTS,
-      subjectId
+      subjectId,
+      COLLECTIONS.EXAMS,
+      examId
     );
     const docSnap = await getDoc(docRef);
-    return docToData<Subject>(docSnap);
+    return docToData<Exam>(docSnap);
   }
 
-  // Get all subjects for a school
-  static async getBySchoolId(schoolId: string): Promise<Subject[]> {
+  // Get all exams for a specific subject
+  static async getBySubjectId(
+    schoolId: string,
+    subjectId: string
+  ): Promise<Exam[]> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
     const q = query(
-      collection(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.SUBJECTS),
+      collection(
+        db,
+        COLLECTIONS.SCHOOLS,
+        schoolId,
+        COLLECTIONS.SUBJECTS,
+        subjectId,
+        COLLECTIONS.EXAMS
+      ),
       orderBy("name", "asc")
     );
     const snapshot = await getDocs(q);
-    return queryToData<Subject>(snapshot);
+    return queryToData<Exam>(snapshot);
   }
 
-  // Create new subject
+  // Create new exam for a subject
   static async create(
     schoolId: string,
-    data: CreateSubjectData
+    subjectId: string,
+    data: CreateExamData
   ): Promise<string> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
     const docRef = await addDoc(
-      collection(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.SUBJECTS),
+      collection(
+        db,
+        COLLECTIONS.SCHOOLS,
+        schoolId,
+        COLLECTIONS.SUBJECTS,
+        subjectId,
+        COLLECTIONS.EXAMS
+      ),
       {
         ...data,
         createdAt: serverTimestamp(),
@@ -78,11 +98,12 @@ export class SubjectService {
     return docRef.id;
   }
 
-  // Update subject
+  // Update exam
   static async update(
     schoolId: string,
     subjectId: string,
-    data: Partial<CreateSubjectData>
+    examId: string,
+    data: Partial<CreateExamData>
   ): Promise<void> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
@@ -91,7 +112,9 @@ export class SubjectService {
       COLLECTIONS.SCHOOLS,
       schoolId,
       COLLECTIONS.SUBJECTS,
-      subjectId
+      subjectId,
+      COLLECTIONS.EXAMS,
+      examId
     );
     await updateDoc(docRef, {
       ...data,
@@ -99,8 +122,12 @@ export class SubjectService {
     });
   }
 
-  // Delete subject
-  static async delete(schoolId: string, subjectId: string): Promise<void> {
+  // Delete exam
+  static async delete(
+    schoolId: string,
+    subjectId: string,
+    examId: string
+  ): Promise<void> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
     const docRef = doc(
@@ -108,32 +135,43 @@ export class SubjectService {
       COLLECTIONS.SCHOOLS,
       schoolId,
       COLLECTIONS.SUBJECTS,
-      subjectId
+      subjectId,
+      COLLECTIONS.EXAMS,
+      examId
     );
     await deleteDoc(docRef);
   }
 
-  // Listen to subjects changes for a school
-  static onSchoolSubjectsSnapshot(
+  // Listen to exams changes for a subject
+  static onSubjectExamsSnapshot(
     schoolId: string,
-    callback: (subjects: Subject[]) => void
+    subjectId: string,
+    callback: (exams: Exam[]) => void
   ): () => void {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
     const q = query(
-      collection(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.SUBJECTS),
+      collection(
+        db,
+        COLLECTIONS.SCHOOLS,
+        schoolId,
+        COLLECTIONS.SUBJECTS,
+        subjectId,
+        COLLECTIONS.EXAMS
+      ),
       orderBy("name", "asc")
     );
     return onSnapshot(q, (snapshot) => {
-      callback(queryToData<Subject>(snapshot));
+      callback(queryToData<Exam>(snapshot));
     });
   }
 
-  // Listen to single subject changes
-  static onSubjectSnapshot(
+  // Listen to single exam changes
+  static onExamSnapshot(
     schoolId: string,
     subjectId: string,
-    callback: (subject: Subject | null) => void
+    examId: string,
+    callback: (exam: Exam | null) => void
   ): () => void {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
@@ -142,10 +180,27 @@ export class SubjectService {
       COLLECTIONS.SCHOOLS,
       schoolId,
       COLLECTIONS.SUBJECTS,
-      subjectId
+      subjectId,
+      COLLECTIONS.EXAMS,
+      examId
     );
     return onSnapshot(docRef, (doc) => {
-      callback(docToData<Subject>(doc));
+      callback(docToData<Exam>(doc));
     });
+  }
+
+  // Copy from default exam to subject exam
+  static async createFromDefault(
+    schoolId: string,
+    subjectId: string,
+    defaultExam: Exam
+  ): Promise<string> {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const examData: CreateExamData = {
+      name: defaultExam.name,
+    };
+
+    return this.create(schoolId, subjectId, examData);
   }
 }

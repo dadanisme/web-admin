@@ -13,14 +13,8 @@ import {
   QuerySnapshot,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import {
-  User,
-  CreateUserData,
-} from "@/types";
-import {
-  COLLECTIONS,
-  FIRESTORE_ERRORS,
-} from "@/lib/firestore-constants";
+import { User, CreateUserData } from "@/types";
+import { COLLECTIONS, FIRESTORE_ERRORS } from "@/lib/firestore-constants";
 
 // Helper to convert Firestore document to typed object
 function docToData<T>(doc: DocumentSnapshot): T | null {

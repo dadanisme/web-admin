@@ -2,13 +2,13 @@
 
 import { useAuth } from "@/contexts/auth-context";
 import { AuthGuard } from "@/components/auth-guard";
-import { StudentList } from "@/components/students/student-list";
+import { DefaultExamList } from "@/components/default-exams/default-exam-list";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/lib/paths";
 
-export default function StudentsPage() {
+export default function DefaultExamsPage() {
   const { user, adminClaims, logout } = useAuth();
 
   if (!adminClaims?.schoolId) {
@@ -20,7 +20,7 @@ export default function StudentsPage() {
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 sm:py-6 gap-4">
                 <div className="flex-1 min-w-0">
                   <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate">
-                    Students Management
+                    Default Exams Management
                   </h1>
                   <p className="mt-1 text-xs sm:text-sm text-muted-foreground truncate">
                     No school assignment found
@@ -64,7 +64,7 @@ export default function StudentsPage() {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 sm:py-6 gap-4">
               <div className="flex-1 min-w-0">
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate">
-                  Students Management
+                  Default Exams Management
                 </h1>
                 <p className="mt-1 text-xs sm:text-sm text-muted-foreground truncate">
                   Welcome back, {user?.displayName || user?.email}
@@ -91,7 +91,7 @@ export default function StudentsPage() {
         </header>
 
         <main className="max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6 lg:px-8">
-          <StudentList schoolId={adminClaims.schoolId} />
+          <DefaultExamList schoolId={adminClaims.schoolId} />
         </main>
       </div>
     </AuthGuard>

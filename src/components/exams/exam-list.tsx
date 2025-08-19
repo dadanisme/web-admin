@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Student } from "@/types/school";
-import { useStudents, useStudentMutations } from "@/hooks/useStudents";
+import { Exam } from "@/types/school";
+import { useExams, useExamMutations } from "@/hooks/useExams";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -14,45 +14,51 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Edit, Trash2 } from "lucide-react";
-import { StudentForm } from "./student-form";
+import { Plus, Edit, Trash2, Copy } from "lucide-react";
+import { ExamForm } from "./exam-form";
+import { CopyFromDefaultDialog } from "./copy-from-default-dialog";
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog";
 
-interface StudentListProps {
+interface ExamListProps {
   schoolId: string;
+  subjectId: string;
+  subjectName: string;
 }
 
-export function StudentList({ schoolId }: StudentListProps) {
-  const { students, loading, error } = useStudents(schoolId);
-  const { deleteStudent, loading: mutationLoading } =
-    useStudentMutations(schoolId);
+export function ExamList({ schoolId, subjectId, subjectName }: ExamListProps) {
+  const { exams, loading, error } = useExams(schoolId, subjectId);
+  const { deleteExam, loading: mutationLoading } = useExamMutations(
+    schoolId,
+    subjectId
+  );
 
   const [showForm, setShowForm] = useState(false);
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const [showCopyDialog, setShowCopyDialog] = useState(false);
+  const [editingExam, setEditingExam] = useState<Exam | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
+  const [examToDelete, setExamToDelete] = useState<Exam | null>(null);
 
-  const handleEdit = (student: Student) => {
-    setEditingStudent(student);
+  const handleEdit = (exam: Exam) => {
+    setEditingExam(exam);
     setShowForm(true);
   };
 
-  const handleDeleteClick = (student: Student) => {
-    setStudentToDelete(student);
+  const handleDeleteClick = (exam: Exam) => {
+    setExamToDelete(exam);
     setShowDeleteDialog(true);
   };
 
   const handleDeleteConfirm = async () => {
-    if (!studentToDelete) return;
+    if (!examToDelete) return;
 
     try {
-      setDeletingId(studentToDelete.id);
-      await deleteStudent(studentToDelete.id);
+      setDeletingId(examToDelete.id);
+      await deleteExam(examToDelete.id);
       setShowDeleteDialog(false);
-      setStudentToDelete(null);
+      setExamToDelete(null);
     } catch (error) {
-      console.error("Failed to delete student:", error);
+      console.error("Failed to delete exam:", error);
     } finally {
       setDeletingId(null);
     }
@@ -60,23 +66,27 @@ export function StudentList({ schoolId }: StudentListProps) {
 
   const handleDeleteCancel = () => {
     setShowDeleteDialog(false);
-    setStudentToDelete(null);
+    setExamToDelete(null);
   };
 
   const handleFormClose = () => {
     setShowForm(false);
-    setEditingStudent(null);
+    setEditingExam(null);
+  };
+
+  const handleCopyClose = () => {
+    setShowCopyDialog(false);
   };
 
   if (loading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Students</CardTitle>
+          <CardTitle>Exams for {subjectName}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {[...Array(5)].map((_, i) => (
+            {[...Array(3)].map((_, i) => (
               <Skeleton key={i} className="h-12 w-full" />
             ))}
           </div>
@@ -89,12 +99,10 @@ export function StudentList({ schoolId }: StudentListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Students</CardTitle>
+          <CardTitle>Exams for {subjectName}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-destructive">
-            Error loading students: {error}
-          </div>
+          <div className="text-destructive">Error loading exams: {error}</div>
         </CardContent>
       </Card>
     );
@@ -104,16 +112,24 @@ export function StudentList({ schoolId }: StudentListProps) {
     <>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Students ({students.length})</CardTitle>
-          <Button onClick={() => setShowForm(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Student
-          </Button>
+          <CardTitle>
+            Exams for {subjectName} ({exams.length})
+          </CardTitle>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setShowCopyDialog(true)}>
+              <Copy className="h-4 w-4 mr-2" />
+              Copy from Default
+            </Button>
+            <Button onClick={() => setShowForm(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Exam
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
-          {students.length === 0 ? (
+          {exams.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              No students found. Add your first student to get started.
+              No exams found for this subject.
             </div>
           ) : (
             <Table>
@@ -125,13 +141,11 @@ export function StudentList({ schoolId }: StudentListProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {students.map((student) => (
-                  <TableRow key={student.id}>
-                    <TableCell className="font-medium">
-                      {student.name}
-                    </TableCell>
+                {exams.map((exam) => (
+                  <TableRow key={exam.id}>
+                    <TableCell className="font-medium">{exam.name}</TableCell>
                     <TableCell>
-                      {student.createdAt?.toDate().toLocaleDateString() ||
+                      {exam.createdAt?.toDate().toLocaleDateString() ||
                         "Unknown"}
                     </TableCell>
                     <TableCell className="text-right">
@@ -139,17 +153,15 @@ export function StudentList({ schoolId }: StudentListProps) {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleEdit(student)}
+                          onClick={() => handleEdit(exam)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => handleDeleteClick(student)}
-                          disabled={
-                            deletingId === student.id || mutationLoading
-                          }
+                          onClick={() => handleDeleteClick(exam)}
+                          disabled={deletingId === exam.id || mutationLoading}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -163,22 +175,31 @@ export function StudentList({ schoolId }: StudentListProps) {
         </CardContent>
       </Card>
 
-      <StudentForm
+      <ExamForm
         open={showForm}
         onOpenChange={handleFormClose}
         schoolId={schoolId}
-        student={editingStudent}
+        subjectId={subjectId}
+        exam={editingExam}
         onSuccess={handleFormClose}
+      />
+
+      <CopyFromDefaultDialog
+        open={showCopyDialog}
+        onOpenChange={handleCopyClose}
+        schoolId={schoolId}
+        subjectId={subjectId}
+        onSuccess={handleCopyClose}
       />
 
       <DeleteConfirmationDialog
         open={showDeleteDialog}
         onOpenChange={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
-        title="Delete Student"
+        title="Delete Exam"
         description={
-          studentToDelete
-            ? `Are you sure you want to delete "${studentToDelete.name}"? This action cannot be undone.`
+          examToDelete
+            ? `Are you sure you want to delete "${examToDelete.name}"? This action cannot be undone.`
             : ""
         }
         isLoading={!!deletingId}

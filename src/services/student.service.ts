@@ -15,10 +15,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Student } from "@/types/school";
-import {
-  COLLECTIONS,
-  FIRESTORE_ERRORS,
-} from "@/lib/firestore-constants";
+import { COLLECTIONS, FIRESTORE_ERRORS } from "@/lib/firestore-constants";
 
 // Helper to convert Firestore document to typed object
 function docToData<T>(doc: DocumentSnapshot): T | null {
@@ -34,10 +31,19 @@ export type CreateStudentData = Omit<Student, "id" | "createdAt" | "updatedAt">;
 
 export class StudentService {
   // Get student by ID within a school
-  static async getById(schoolId: string, studentId: string): Promise<Student | null> {
+  static async getById(
+    schoolId: string,
+    studentId: string
+  ): Promise<Student | null> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
-    const docRef = doc(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.STUDENTS, studentId);
+    const docRef = doc(
+      db,
+      COLLECTIONS.SCHOOLS,
+      schoolId,
+      COLLECTIONS.STUDENTS,
+      studentId
+    );
     const docSnap = await getDoc(docRef);
     return docToData<Student>(docSnap);
   }
@@ -55,7 +61,10 @@ export class StudentService {
   }
 
   // Create new student
-  static async create(schoolId: string, data: CreateStudentData): Promise<string> {
+  static async create(
+    schoolId: string,
+    data: CreateStudentData
+  ): Promise<string> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
     const docRef = await addDoc(
@@ -77,7 +86,13 @@ export class StudentService {
   ): Promise<void> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
-    const docRef = doc(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.STUDENTS, studentId);
+    const docRef = doc(
+      db,
+      COLLECTIONS.SCHOOLS,
+      schoolId,
+      COLLECTIONS.STUDENTS,
+      studentId
+    );
     await updateDoc(docRef, {
       ...data,
       updatedAt: serverTimestamp(),
@@ -88,7 +103,13 @@ export class StudentService {
   static async delete(schoolId: string, studentId: string): Promise<void> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
-    const docRef = doc(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.STUDENTS, studentId);
+    const docRef = doc(
+      db,
+      COLLECTIONS.SCHOOLS,
+      schoolId,
+      COLLECTIONS.STUDENTS,
+      studentId
+    );
     await deleteDoc(docRef);
   }
 
@@ -116,7 +137,13 @@ export class StudentService {
   ): () => void {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
-    const docRef = doc(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.STUDENTS, studentId);
+    const docRef = doc(
+      db,
+      COLLECTIONS.SCHOOLS,
+      schoolId,
+      COLLECTIONS.STUDENTS,
+      studentId
+    );
     return onSnapshot(docRef, (doc) => {
       callback(docToData<Student>(doc));
     });
