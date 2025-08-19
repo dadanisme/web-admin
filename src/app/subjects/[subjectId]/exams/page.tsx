@@ -61,7 +61,7 @@ export default function SubjectExamsPage({ params }: SubjectExamsPageProps) {
       requireSchool
     >
       <ExamList
-        schoolId={adminClaims!.schoolId}
+        schoolId={adminClaims?.schoolId ?? ""}
         subjectId={subjectId}
         subjectName={subject.name}
       />

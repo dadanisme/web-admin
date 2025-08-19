@@ -9,7 +9,7 @@ export default function DefaultExamsPage() {
 
   return (
     <PageLayout title="Default Exams Management" requireSchool>
-      <DefaultExamList schoolId={adminClaims!.schoolId} />
+      <DefaultExamList schoolId={adminClaims?.schoolId ?? ""} />
     </PageLayout>
   );
 }

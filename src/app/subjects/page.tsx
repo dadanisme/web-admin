@@ -9,7 +9,7 @@ export default function SubjectsPage() {
 
   return (
     <PageLayout title="Subjects Management" requireSchool>
-      <SubjectList schoolId={adminClaims!.schoolId} />
+      <SubjectList schoolId={adminClaims?.schoolId ?? ""} />
     </PageLayout>
   );
 }

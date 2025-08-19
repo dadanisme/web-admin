@@ -9,7 +9,7 @@ export default function StudentsPage() {
 
   return (
     <PageLayout title="Students Management" requireSchool>
-      <StudentList schoolId={adminClaims!.schoolId} />
+      <StudentList schoolId={adminClaims?.schoolId ?? ""} />
     </PageLayout>
   );
 }
