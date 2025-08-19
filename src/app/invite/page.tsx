@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthGuard } from "@/components/auth-guard";
+import { PageLayout } from "@/components/layout/page-layout";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,24 +88,13 @@ export default function InviteTeacherPage() {
   };
 
   return (
-    <AuthGuard requireAdmin>
-      <div className="min-h-screen bg-background">
-        <header className="bg-card shadow border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="py-6">
-              <h1 className="text-3xl font-bold text-foreground">
-                Invite Teacher
-              </h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Invite a teacher to join your school
-              </p>
-            </div>
-          </div>
-        </header>
-
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
-            <div className="max-w-2xl mx-auto">
+    <PageLayout
+      title="Invite Teacher"
+      subtitle="Invite a teacher to join your school"
+      requireAdmin
+      requireSchool
+    >
+      <div className="max-w-2xl mx-auto">
               <Card>
                 <CardHeader>
                   <CardTitle>Send Teacher Invitation</CardTitle>
@@ -185,10 +174,7 @@ export default function InviteTeacherPage() {
                   </form>
                 </CardContent>
               </Card>
-            </div>
-          </div>
-        </main>
       </div>
-    </AuthGuard>
+    </PageLayout>
   );
 }

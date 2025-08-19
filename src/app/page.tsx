@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthGuard } from "@/components/auth-guard";
+import { PageLayout } from "@/components/layout/page-layout";
 import { useAuth } from "@/contexts/auth-context";
 import { useSchoolStats } from "@/hooks/useSchoolStats";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import Link from "next/link";
 import { ROUTES } from "@/lib/paths";
 
 export default function Home() {
-  const { user, adminClaims, logout } = useAuth();
+  const { adminClaims } = useAuth();
   const {
     stats,
     loading: statsLoading,
@@ -24,34 +24,11 @@ export default function Home() {
   } = useSchoolStats(adminClaims?.schoolId);
 
   return (
-    <AuthGuard requireAdmin>
-      <div className="min-h-screen bg-background">
-        <header className="bg-card shadow border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 sm:py-6 gap-4">
-              <div className="flex-1 min-w-0">
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate">
-                  School Admin Dashboard
-                </h1>
-                <p className="mt-1 text-xs sm:text-sm text-muted-foreground truncate">
-                  Welcome back, {user?.displayName || user?.email}
-                </p>
-              </div>
-              <div className="flex-shrink-0">
-                <Button
-                  onClick={logout}
-                  variant="outline"
-                  size="sm"
-                  className="w-full sm:w-auto"
-                >
-                  Sign Out
-                </Button>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <main className="max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6 lg:px-8">
+    <PageLayout
+      title="School Admin Dashboard"
+      requireAdmin
+      showSignOut={true}
+    >
           <div className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               <Card>
@@ -179,9 +156,7 @@ export default function Home() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </main>
-      </div>
-    </AuthGuard>
+        </div>
+    </PageLayout>
   );
 }
