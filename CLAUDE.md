@@ -102,6 +102,11 @@ functions/
 - Follow shadcn/ui design system with neutral base color
 - CSS variables are enabled for theme customization
 - Global styles are in `src/app/globals.css`
+- **IMPORTANT: Always use semantic color classes, never hardcode colors**
+  - Use `primary`, `secondary`, `destructive`, `muted`, `accent` instead of hardcoded colors
+  - Use `text-primary`, `bg-primary`, `border-primary` etc.
+  - Use `text-muted-foreground`, `text-destructive`, `bg-secondary` for semantic meanings
+  - Avoid classes like `text-red-500`, `bg-blue-600` - use semantic equivalents
 
 ## Development Notes
 

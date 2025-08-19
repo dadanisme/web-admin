@@ -145,9 +145,14 @@ export default function Home() {
                 <CardDescription>Common administrative tasks</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild variant="outline" className="w-full sm:w-auto">
-                  <Link href={ROUTES.INVITE}>Invite Teacher by Email</Link>
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button asChild variant="outline" className="w-full sm:w-auto">
+                    <Link href={ROUTES.INVITE}>Invite Teacher by Email</Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full sm:w-auto">
+                    <Link href={ROUTES.STUDENTS}>Manage Students</Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>

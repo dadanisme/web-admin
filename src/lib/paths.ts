@@ -4,6 +4,7 @@ export const ROUTES = {
   FORBIDDEN: "/forbidden",
   REGISTER: "/register",
   INVITE: "/invite",
+  STUDENTS: "/students",
 } as const;
 
 // Dynamic route helpers
