@@ -5,6 +5,7 @@ export const ROUTES = {
   REGISTER: "/register",
   INVITE: "/invite",
   STUDENTS: "/students",
+  SUBJECTS: "/subjects",
 } as const;
 
 // Dynamic route helpers

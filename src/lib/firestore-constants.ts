@@ -4,6 +4,7 @@ export const COLLECTIONS = {
   REGISTRATIONS: "registrations",
   SCHOOLS: "schools",
   STUDENTS: "students",
+  SUBJECTS: "subjects",
 } as const;
 
 // Registration status values

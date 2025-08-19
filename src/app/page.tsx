@@ -152,6 +152,9 @@ export default function Home() {
                   <Button asChild variant="outline" className="w-full sm:w-auto">
                     <Link href={ROUTES.STUDENTS}>Manage Students</Link>
                   </Button>
+                  <Button asChild variant="outline" className="w-full sm:w-auto">
+                    <Link href={ROUTES.SUBJECTS}>Manage Subjects</Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>

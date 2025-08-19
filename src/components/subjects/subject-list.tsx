@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Student } from "@/types/school";
-import { useStudents, useStudentMutations } from "@/hooks/useStudents";
+import { Subject } from "@/types/school";
+import { useSubjects, useSubjectMutations } from "@/hooks/useSubjects";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,43 +15,43 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Edit, Trash2 } from "lucide-react";
-import { StudentForm } from "./student-form";
+import { SubjectForm } from "./subject-form";
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog";
 
-interface StudentListProps {
+interface SubjectListProps {
   schoolId: string;
 }
 
-export function StudentList({ schoolId }: StudentListProps) {
-  const { students, loading, error } = useStudents(schoolId);
-  const { deleteStudent, loading: mutationLoading } = useStudentMutations(schoolId);
+export function SubjectList({ schoolId }: SubjectListProps) {
+  const { subjects, loading, error } = useSubjects(schoolId);
+  const { deleteSubject, loading: mutationLoading } = useSubjectMutations(schoolId);
   
   const [showForm, setShowForm] = useState(false);
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
+  const [subjectToDelete, setSubjectToDelete] = useState<Subject | null>(null);
 
-  const handleEdit = (student: Student) => {
-    setEditingStudent(student);
+  const handleEdit = (subject: Subject) => {
+    setEditingSubject(subject);
     setShowForm(true);
   };
 
-  const handleDeleteClick = (student: Student) => {
-    setStudentToDelete(student);
+  const handleDeleteClick = (subject: Subject) => {
+    setSubjectToDelete(subject);
     setShowDeleteDialog(true);
   };
 
   const handleDeleteConfirm = async () => {
-    if (!studentToDelete) return;
+    if (!subjectToDelete) return;
 
     try {
-      setDeletingId(studentToDelete.id);
-      await deleteStudent(studentToDelete.id);
+      setDeletingId(subjectToDelete.id);
+      await deleteSubject(subjectToDelete.id);
       setShowDeleteDialog(false);
-      setStudentToDelete(null);
+      setSubjectToDelete(null);
     } catch (error) {
-      console.error("Failed to delete student:", error);
+      console.error("Failed to delete subject:", error);
     } finally {
       setDeletingId(null);
     }
@@ -59,19 +59,19 @@ export function StudentList({ schoolId }: StudentListProps) {
 
   const handleDeleteCancel = () => {
     setShowDeleteDialog(false);
-    setStudentToDelete(null);
+    setSubjectToDelete(null);
   };
 
   const handleFormClose = () => {
     setShowForm(false);
-    setEditingStudent(null);
+    setEditingSubject(null);
   };
 
   if (loading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Students</CardTitle>
+          <CardTitle>Subjects</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -88,10 +88,10 @@ export function StudentList({ schoolId }: StudentListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Students</CardTitle>
+          <CardTitle>Subjects</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-destructive">Error loading students: {error}</div>
+          <div className="text-destructive">Error loading subjects: {error}</div>
         </CardContent>
       </Card>
     );
@@ -101,16 +101,16 @@ export function StudentList({ schoolId }: StudentListProps) {
     <>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Students ({students.length})</CardTitle>
+          <CardTitle>Subjects ({subjects.length})</CardTitle>
           <Button onClick={() => setShowForm(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Student
+            Add Subject
           </Button>
         </CardHeader>
         <CardContent>
-          {students.length === 0 ? (
+          {subjects.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              No students found. Add your first student to get started.
+              No subjects found. Add your first subject to get started.
             </div>
           ) : (
             <Table>
@@ -122,26 +122,26 @@ export function StudentList({ schoolId }: StudentListProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {students.map((student) => (
-                  <TableRow key={student.id}>
-                    <TableCell className="font-medium">{student.name}</TableCell>
+                {subjects.map((subject) => (
+                  <TableRow key={subject.id}>
+                    <TableCell className="font-medium">{subject.name}</TableCell>
                     <TableCell>
-                      {student.createdAt?.toDate().toLocaleDateString() || "Unknown"}
+                      {subject.createdAt?.toDate().toLocaleDateString() || "Unknown"}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex gap-2 justify-end">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleEdit(student)}
+                          onClick={() => handleEdit(subject)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => handleDeleteClick(student)}
-                          disabled={deletingId === student.id || mutationLoading}
+                          onClick={() => handleDeleteClick(subject)}
+                          disabled={deletingId === subject.id || mutationLoading}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -155,11 +155,11 @@ export function StudentList({ schoolId }: StudentListProps) {
         </CardContent>
       </Card>
 
-      <StudentForm
+      <SubjectForm
         open={showForm}
         onOpenChange={handleFormClose}
         schoolId={schoolId}
-        student={editingStudent}
+        subject={editingSubject}
         onSuccess={handleFormClose}
       />
 
@@ -167,10 +167,10 @@ export function StudentList({ schoolId }: StudentListProps) {
         open={showDeleteDialog}
         onOpenChange={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
-        title="Delete Student"
+        title="Delete Subject"
         description={
-          studentToDelete
-            ? `Are you sure you want to delete "${studentToDelete.name}"? This action cannot be undone.`
+          subjectToDelete
+            ? `Are you sure you want to delete "${subjectToDelete.name}"? This action cannot be undone.`
             : ""
         }
         isLoading={!!deletingId}
