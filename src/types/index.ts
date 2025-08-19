@@ -11,7 +11,8 @@ export interface User extends DefaultFirestoreFields {
   email: string;
   displayName?: string;
   photoURL?: string;
-  schoolId: string | null;
+  schoolId?: string;
+  didCompleteOnboarding?: boolean;
 }
 
 export interface Registration extends DefaultFirestoreFields {
