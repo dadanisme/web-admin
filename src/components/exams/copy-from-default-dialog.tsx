@@ -49,7 +49,7 @@ export function CopyFromDefaultDialog({
 
     setIsCopying(true);
     setCopiedCount(0);
-    
+
     try {
       for (let i = 0; i < defaultExams.length; i++) {
         const exam = defaultExams[i];
@@ -113,26 +113,33 @@ export function CopyFromDefaultDialog({
             <div>
               <div className="mb-4 p-4 bg-muted/50 rounded-lg">
                 <h3 className="font-medium mb-2">
-                  {defaultExams.length} Default Exam{defaultExams.length === 1 ? '' : 's'} Available
+                  {defaultExams.length} Default Exam
+                  {defaultExams.length === 1 ? "" : "s"} Available
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  This will copy all default exams to this subject. You can edit them individually afterwards.
+                  This will copy all default exams to this subject. You can edit
+                  them individually afterwards.
                 </p>
-                
+
                 {isCopying && (
                   <div className="mb-4">
                     <div className="flex items-center gap-2 text-sm">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-                      <span>Copying exams... ({copiedCount}/{defaultExams.length})</span>
+                      <span>
+                        Copying exams... ({copiedCount}/{defaultExams.length})
+                      </span>
                     </div>
                   </div>
                 )}
-                
+
                 {copiedCount > 0 && !isCopying && (
                   <div className="mb-4">
                     <div className="flex items-center gap-2 text-sm text-green-600">
                       <Check className="h-4 w-4" />
-                      <span>Successfully copied {copiedCount} exam{copiedCount === 1 ? '' : 's'}!</span>
+                      <span>
+                        Successfully copied {copiedCount} exam
+                        {copiedCount === 1 ? "" : "s"}!
+                      </span>
                     </div>
                   </div>
                 )}
@@ -143,20 +150,22 @@ export function CopyFromDefaultDialog({
                   className="w-full"
                 >
                   <Copy className="h-4 w-4 mr-2" />
-                  {isCopying 
-                    ? `Copying... (${copiedCount}/${defaultExams.length})` 
-                    : copiedCount > 0 
-                    ? `Copied ${copiedCount} Exam${copiedCount === 1 ? '' : 's'}` 
-                    : `Copy All ${defaultExams.length} Exam${defaultExams.length === 1 ? '' : 's'}`
-                  }
+                  {isCopying
+                    ? `Copying... (${copiedCount}/${defaultExams.length})`
+                    : copiedCount > 0
+                      ? `Copied ${copiedCount} Exam${copiedCount === 1 ? "" : "s"}`
+                      : `Copy All ${defaultExams.length} Exam${defaultExams.length === 1 ? "" : "s"}`}
                 </Button>
               </div>
-              
+
               <div className="space-y-2">
                 <h4 className="font-medium text-sm">Preview:</h4>
                 <div className="space-y-2 max-h-60 overflow-y-auto">
                   {defaultExams.map((exam, index) => (
-                    <div key={exam.id} className="flex items-center gap-3 p-2 bg-background rounded border">
+                    <div
+                      key={exam.id}
+                      className="flex items-center gap-3 p-2 bg-background rounded border"
+                    >
                       <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs">
                         {index < copiedCount ? (
                           <Check className="h-3 w-3 text-green-600" />
@@ -167,7 +176,9 @@ export function CopyFromDefaultDialog({
                       <div className="flex-1 min-w-0">
                         <p className="font-medium truncate">{exam.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          Created: {exam.createdAt?.toDate().toLocaleDateString() || "Unknown"}
+                          Created:{" "}
+                          {exam.createdAt?.toDate().toLocaleDateString() ||
+                            "Unknown"}
                         </p>
                       </div>
                     </div>
