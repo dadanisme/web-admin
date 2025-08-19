@@ -102,6 +102,11 @@ functions/
 - Follow shadcn/ui design system with neutral base color
 - CSS variables are enabled for theme customization
 - Global styles are in `src/app/globals.css`
+- **IMPORTANT: Always use semantic color classes, never hardcode colors**
+  - Use `primary`, `secondary`, `destructive`, `muted`, `accent` instead of hardcoded colors
+  - Use `text-primary`, `bg-primary`, `border-primary` etc.
+  - Use `text-muted-foreground`, `text-destructive`, `bg-secondary` for semantic meanings
+  - Avoid classes like `text-red-500`, `bg-blue-600` - use semantic equivalents
 
 ## Development Notes
 
@@ -287,6 +292,7 @@ All routes are defined in `src/lib/paths.ts` as the `ROUTES` constant to avoid h
 **Trigger**: `onDocumentUpdated("users/{userId}")`
 
 **Behavior**:
+
 - Listens for changes to user documents
 - Detects when `schoolId` field is added or modified
 - Finds all registrations for that user
@@ -296,6 +302,7 @@ All routes are defined in `src/lib/paths.ts` as the `ROUTES` constant to avoid h
 **Use Case**: When a teacher logs into the iOS app after being invited, their user document gets updated with a `schoolId`. This function ensures their existing registration records are automatically updated to reflect the school assignment.
 
 **Structure**:
+
 - Main function: `syncUserSchoolToRegistrations()` - Contains business logic
 - Trigger function: `onUserUpdated()` - Firebase trigger wrapper
 - Helper functions: Database query and batch update operations

@@ -3,6 +3,10 @@ export const COLLECTIONS = {
   USERS: "users",
   REGISTRATIONS: "registrations",
   SCHOOLS: "schools",
+  STUDENTS: "students",
+  SUBJECTS: "subjects",
+  DEFAULT_EXAMS: "defaultExams",
+  EXAMS: "exams",
 } as const;
 
 // Registration status values

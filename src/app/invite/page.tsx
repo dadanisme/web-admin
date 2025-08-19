@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthGuard } from "@/components/auth-guard";
+import { PageLayout } from "@/components/layout/page-layout";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,107 +88,89 @@ export default function InviteTeacherPage() {
   };
 
   return (
-    <AuthGuard requireAdmin>
-      <div className="min-h-screen bg-background">
-        <header className="bg-card shadow border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="py-6">
-              <h1 className="text-3xl font-bold text-foreground">
-                Invite Teacher
-              </h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Invite a teacher to join your school
-              </p>
-            </div>
-          </div>
-        </header>
+    <PageLayout
+      title="Invite Teacher"
+      subtitle="Invite a teacher to join your school"
+      requireAdmin
+      requireSchool
+    >
+      <div className="max-w-2xl mx-auto">
+        <Card>
+          <CardHeader>
+            <CardTitle>Send Teacher Invitation</CardTitle>
+            <CardDescription>
+              Enter the teacher&apos;s email address to invite them to your
+              school
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleInvite} className="space-y-4">
+              <div>
+                <Label htmlFor="email">Teacher Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="teacher@example.com"
+                  disabled={isProcessing}
+                  className="mt-1"
+                />
+              </div>
 
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
-            <div className="max-w-2xl mx-auto">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Send Teacher Invitation</CardTitle>
-                  <CardDescription>
-                    Enter the teacher&apos;s email address to invite them to
-                    your school
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleInvite} className="space-y-4">
-                    <div>
-                      <Label htmlFor="email">Teacher Email Address</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="teacher@example.com"
-                        disabled={isProcessing}
-                        className="mt-1"
-                      />
-                    </div>
+              {error && (
+                <div className="text-destructive text-sm bg-destructive/10 p-3 rounded">
+                  {error}
+                </div>
+              )}
 
-                    {error && (
-                      <div className="text-destructive text-sm bg-destructive/10 p-3 rounded">
-                        {error}
-                      </div>
-                    )}
+              {success && (
+                <div className="text-green-700 text-sm bg-green-50 p-3 rounded">
+                  {success}
+                </div>
+              )}
 
-                    {success && (
-                      <div className="text-green-700 text-sm bg-green-50 p-3 rounded">
-                        {success}
-                      </div>
-                    )}
+              <div className="flex gap-4">
+                <Button
+                  type="submit"
+                  disabled={isProcessing}
+                  className="flex-1 sm:flex-none"
+                >
+                  {isProcessing ? "Sending Invitation..." : "Send Invitation"}
+                </Button>
 
-                    <div className="flex gap-4">
-                      <Button
-                        type="submit"
-                        disabled={isProcessing}
-                        className="flex-1 sm:flex-none"
-                      >
-                        {isProcessing
-                          ? "Sending Invitation..."
-                          : "Send Invitation"}
-                      </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="flex-1 sm:flex-none"
+                >
+                  <Link href={ROUTES.HOME}>Back to Dashboard</Link>
+                </Button>
+              </div>
 
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="flex-1 sm:flex-none"
-                      >
-                        <Link href={ROUTES.HOME}>Back to Dashboard</Link>
-                      </Button>
-                    </div>
-
-                    <div className="text-xs text-muted-foreground mt-4 p-3 bg-muted rounded">
-                      <p className="font-medium mb-2">How it works:</p>
-                      <ul className="space-y-1">
-                        <li>
-                          • If the teacher already has an account but no school
-                          assignment, they&apos;ll be immediately assigned to
-                          your school
-                        </li>
-                        <li>
-                          • If the teacher doesn&apos;t have an account yet,
-                          they&apos;ll be auto-assigned to your school when they
-                          first log in to the iOS app
-                        </li>
-                        <li>
-                          • Teachers will be assigned to school:{" "}
-                          <span className="font-mono">
-                            {adminClaims?.schoolId}
-                          </span>
-                        </li>
-                      </ul>
-                    </div>
-                  </form>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </main>
+              <div className="text-xs text-muted-foreground mt-4 p-3 bg-muted rounded">
+                <p className="font-medium mb-2">How it works:</p>
+                <ul className="space-y-1">
+                  <li>
+                    • If the teacher already has an account but no school
+                    assignment, they&apos;ll be immediately assigned to your
+                    school
+                  </li>
+                  <li>
+                    • If the teacher doesn&apos;t have an account yet,
+                    they&apos;ll be auto-assigned to your school when they first
+                    log in to the iOS app
+                  </li>
+                  <li>
+                    • Teachers will be assigned to school:{" "}
+                    <span className="font-mono">{adminClaims?.schoolId}</span>
+                  </li>
+                </ul>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
       </div>
-    </AuthGuard>
+    </PageLayout>
   );
 }
