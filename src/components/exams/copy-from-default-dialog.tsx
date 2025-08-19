@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Exam } from "@/types/school";
 import { useDefaultExams } from "@/hooks/useDefaultExams";
 import { useExamMutations } from "@/hooks/useExams";
 import {
@@ -35,11 +34,10 @@ export function CopyFromDefaultDialog({
     loading: defaultExamsLoading,
     error: defaultExamsError,
   } = useDefaultExams(schoolId);
-  const {
-    createFromDefault,
-    loading: copyLoading,
-    error: copyError,
-  } = useExamMutations(schoolId, subjectId);
+  const { createFromDefault, error: copyError } = useExamMutations(
+    schoolId,
+    subjectId
+  );
 
   const [isCopying, setIsCopying] = useState(false);
   const [copiedCount, setCopiedCount] = useState(0);
