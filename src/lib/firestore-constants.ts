@@ -7,6 +7,7 @@ export const COLLECTIONS = {
   SUBJECTS: "subjects",
   DEFAULT_EXAMS: "defaultExams",
   EXAMS: "exams",
+  BATCHES: "batches",
 } as const;
 
 // Registration status values

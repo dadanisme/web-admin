@@ -7,9 +7,11 @@ import {
   updateDoc,
   deleteDoc,
   query,
+  where,
   orderBy,
   onSnapshot,
   serverTimestamp,
+  getCountFromServer,
   DocumentSnapshot,
   QuerySnapshot,
 } from "firebase/firestore";
@@ -147,5 +149,89 @@ export class StudentService {
     return onSnapshot(docRef, (doc) => {
       callback(docToData<Student>(doc));
     });
+  }
+
+  // Get students by batch ID
+  static async getByBatchId(
+    schoolId: string,
+    batchId: string
+  ): Promise<Student[]> {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const q = query(
+      collection(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.STUDENTS),
+      where("batchId", "==", batchId),
+      orderBy("name", "asc")
+    );
+    const snapshot = await getDocs(q);
+    return queryToData<Student>(snapshot);
+  }
+
+  // Listen to students changes for specific batch
+  static onBatchStudentsSnapshot(
+    schoolId: string,
+    batchId: string,
+    callback: (students: Student[]) => void
+  ): () => void {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const q = query(
+      collection(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.STUDENTS),
+      where("batchId", "==", batchId),
+      orderBy("name", "asc")
+    );
+    return onSnapshot(q, (snapshot) => {
+      callback(queryToData<Student>(snapshot));
+    });
+  }
+
+  // Get total student count for school
+  static async getCountBySchool(schoolId: string): Promise<number> {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const q = query(
+      collection(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.STUDENTS)
+    );
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count;
+  }
+
+  // Get student count by batch
+  static async getCountByBatch(
+    schoolId: string,
+    batchId: string
+  ): Promise<number> {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const q = query(
+      collection(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.STUDENTS),
+      where("batchId", "==", batchId)
+    );
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count;
+  }
+
+  // Get student count by active batch
+  static async getCountByActiveBatch(schoolId: string): Promise<number> {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const school = await import("./school.service").then(s => s.SchoolService.getById(schoolId));
+    if (!school?.activeBatchId) {
+      return 0;
+    }
+
+    return this.getCountByBatch(schoolId, school.activeBatchId);
+  }
+
+  // Get count of students without batch (invalid)
+  static async getCountWithoutBatch(schoolId: string): Promise<number> {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const q = query(
+      collection(db, COLLECTIONS.SCHOOLS, schoolId, COLLECTIONS.STUDENTS),
+      where("batchId", "==", null)
+    );
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count;
   }
 }

@@ -2,6 +2,7 @@ import { DefaultFirestoreFields } from "./common";
 
 export interface School extends DefaultFirestoreFields {
   name: string;
+  activeBatchId?: string;
 }
 
 export interface Subject extends DefaultFirestoreFields {
