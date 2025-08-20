@@ -19,6 +19,11 @@ import Link from "next/link";
 import { SubjectForm } from "./subject-form";
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog";
 import { createSubjectExamsPath } from "@/lib/paths";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface SubjectListProps {
   schoolId: string;
@@ -138,29 +143,44 @@ export function SubjectList({ schoolId }: SubjectListProps) {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex gap-2 justify-end">
-                        <Button asChild variant="outline" size="sm">
-                          <Link href={createSubjectExamsPath(subject.id)}>
-                            <BookOpen className="h-4 w-4 mr-2" />
-                            Exams
-                          </Link>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEdit(subject)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDeleteClick(subject)}
-                          disabled={
-                            deletingId === subject.id || mutationLoading
-                          }
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button asChild variant="outline" size="sm">
+                              <Link href={createSubjectExamsPath(subject.id)}>
+                                <BookOpen className="h-4 w-4 mr-2" />
+                                Exams
+                              </Link>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Manage subject exams</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEdit(subject)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Edit subject</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleDeleteClick(subject)}
+                              disabled={
+                                deletingId === subject.id || mutationLoading
+                              }
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Delete subject</TooltipContent>
+                        </Tooltip>
                       </div>
                     </TableCell>
                   </TableRow>

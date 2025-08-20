@@ -12,6 +12,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Plus, Edit, Trash2, Star, StarOff } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface BatchTableProps {
   batches: Batch[];
@@ -89,39 +94,59 @@ export function BatchTable({
                   <TableCell className="text-right">
                     <div className="flex gap-2 justify-end">
                       {activeBatch?.id === batch.id ? (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={onClearActive}
-                        >
-                          <StarOff className="h-4 w-4" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={onClearActive}
+                            >
+                              <StarOff className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Clear active batch</TooltipContent>
+                        </Tooltip>
                       ) : (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onSetActive(batch.id)}
-                        >
-                          <Star className="h-4 w-4" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => onSetActive(batch.id)}
+                            >
+                              <Star className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Set as active batch</TooltipContent>
+                        </Tooltip>
                       )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onEditBatch(batch)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => onDeleteBatch(batch)}
-                        disabled={
-                          deletingId === batch.id || mutationLoading
-                        }
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onEditBatch(batch)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Edit batch</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => onDeleteBatch(batch)}
+                            disabled={
+                              deletingId === batch.id || mutationLoading
+                            }
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Delete batch</TooltipContent>
+                      </Tooltip>
                     </div>
                   </TableCell>
                 </TableRow>
