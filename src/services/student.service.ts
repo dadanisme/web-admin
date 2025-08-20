@@ -211,17 +211,6 @@ export class StudentService {
     return snapshot.data().count;
   }
 
-  // Get student count by active batch
-  static async getCountByActiveBatch(schoolId: string): Promise<number> {
-    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
-
-    const school = await import("./school.service").then(s => s.SchoolService.getById(schoolId));
-    if (!school?.activeBatchId) {
-      return 0;
-    }
-
-    return this.getCountByBatch(schoolId, school.activeBatchId);
-  }
 
   // Get count of students without batch (invalid)
   static async getCountWithoutBatch(schoolId: string): Promise<number> {
