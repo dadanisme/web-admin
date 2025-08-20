@@ -211,7 +211,6 @@ export class StudentService {
     return snapshot.data().count;
   }
 
-
   // Get count of students without batch (invalid)
   static async getCountWithoutBatch(schoolId: string): Promise<number> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);

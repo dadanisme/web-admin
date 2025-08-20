@@ -124,7 +124,9 @@ export function StudentForm({
                 <FormItem>
                   <FormLabel>Batch</FormLabel>
                   <Select
-                    onValueChange={(value) => field.onChange(value === "none" ? undefined : value)}
+                    onValueChange={(value) =>
+                      field.onChange(value === "none" ? undefined : value)
+                    }
                     value={field.value || "none"}
                     disabled={loading}
                   >

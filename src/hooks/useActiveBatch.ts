@@ -47,14 +47,18 @@ export function useActiveBatch(schoolId: string) {
           setLoading(false);
         } catch (error) {
           const errorMessage =
-            error instanceof Error ? error.message : "Failed to fetch active batch";
+            error instanceof Error
+              ? error.message
+              : "Failed to fetch active batch";
           setError(errorMessage);
           setLoading(false);
         }
       },
       (error) => {
         const errorMessage =
-          error instanceof Error ? error.message : "Failed to listen to active batch";
+          error instanceof Error
+            ? error.message
+            : "Failed to listen to active batch";
         setError(errorMessage);
         setLoading(false);
       }

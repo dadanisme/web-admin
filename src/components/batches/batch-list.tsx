@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { Batch } from "@/types/school";
 import { useBatches, useBatchMutations } from "@/hooks/useBatches";
-import { useActiveBatch, useActiveBatchMutations } from "@/hooks/useActiveBatch";
+import {
+  useActiveBatch,
+  useActiveBatchMutations,
+} from "@/hooks/useActiveBatch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BatchForm } from "./batch-form";
@@ -17,7 +20,8 @@ interface BatchListProps {
 export function BatchList({ schoolId }: BatchListProps) {
   const { batches, loading, error } = useBatches(schoolId);
   const { activeBatch } = useActiveBatch(schoolId);
-  const { setActiveBatch, clearActiveBatch } = useActiveBatchMutations(schoolId);
+  const { setActiveBatch, clearActiveBatch } =
+    useActiveBatchMutations(schoolId);
   const { deleteBatch, loading: mutationLoading } = useBatchMutations(schoolId);
 
   const [showForm, setShowForm] = useState(false);
@@ -101,9 +105,7 @@ export function BatchList({ schoolId }: BatchListProps) {
           <CardTitle>Batches</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-destructive">
-            Error loading batches: {error}
-          </div>
+          <div className="text-destructive">Error loading batches: {error}</div>
         </CardContent>
       </Card>
     );

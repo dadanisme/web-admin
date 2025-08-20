@@ -22,15 +22,12 @@ export function useBatchStats(schoolId: string) {
         setLoading(true);
         setError(null);
 
-        const [
-          totalBatches,
-          totalStudents,
-          studentsWithoutBatch,
-        ] = await Promise.all([
-          BatchService.getCountBySchool(schoolId),
-          StudentService.getCountBySchool(schoolId),
-          StudentService.getCountWithoutBatch(schoolId),
-        ]);
+        const [totalBatches, totalStudents, studentsWithoutBatch] =
+          await Promise.all([
+            BatchService.getCountBySchool(schoolId),
+            StudentService.getCountBySchool(schoolId),
+            StudentService.getCountWithoutBatch(schoolId),
+          ]);
 
         setStats({
           totalBatches,
@@ -102,7 +99,10 @@ export function useBatchDetailStats(schoolId: string, batchId: string) {
         setLoading(true);
         setError(null);
 
-        const studentCount = await StudentService.getCountByBatch(schoolId, batchId);
+        const studentCount = await StudentService.getCountByBatch(
+          schoolId,
+          batchId
+        );
 
         setStats({ studentCount });
       } catch (error) {
