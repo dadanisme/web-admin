@@ -1,4 +1,4 @@
-import { DefaultFirestoreFields } from ".";
+import { DefaultFirestoreFields } from "./common";
 
 export interface School extends DefaultFirestoreFields {
   name: string;
