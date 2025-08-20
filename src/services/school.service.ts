@@ -1,9 +1,19 @@
-import { doc, getDoc, DocumentSnapshot } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  serverTimestamp,
+  getCountFromServer,
+  collection,
+  query,
+  where,
+  DocumentSnapshot,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { School } from "@/types";
+import { School, Batch } from "@/types";
 import { COLLECTIONS, FIRESTORE_ERRORS } from "@/lib/firestore-constants";
-import { UserService } from "./user.service";
-import { RegistrationService } from "./registration.service";
+
+import { BatchService } from "./batch.service";
 
 // Helper to convert Firestore document to typed object
 function docToData<T>(doc: DocumentSnapshot): T | null {
@@ -25,16 +35,50 @@ export class SchoolService {
   static async getTeacherCount(schoolId: string): Promise<number> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
-    const users = await UserService.getBySchoolId(schoolId);
-    return users.length;
+    const q = query(
+      collection(db, COLLECTIONS.USERS),
+      where("schoolId", "==", schoolId)
+    );
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count;
   }
 
   // Get pending registration count for school
   static async getPendingCount(schoolId: string): Promise<number> {
     if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
 
-    const registrations =
-      await RegistrationService.getPendingBySchoolId(schoolId);
-    return registrations.length;
+    const q = query(
+      collection(db, COLLECTIONS.REGISTRATIONS),
+      where("schoolId", "==", schoolId),
+      where("status", "==", "pending")
+    );
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count;
+  }
+
+  // Set active batch for school
+  static async setActiveBatch(
+    schoolId: string,
+    batchId: string | null
+  ): Promise<void> {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const docRef = doc(db, COLLECTIONS.SCHOOLS, schoolId);
+    await updateDoc(docRef, {
+      activeBatchId: batchId,
+      updatedAt: serverTimestamp(),
+    });
+  }
+
+  // Get active batch for school
+  static async getActiveBatch(schoolId: string): Promise<Batch | null> {
+    if (!db) throw new Error(FIRESTORE_ERRORS.NOT_INITIALIZED);
+
+    const school = await this.getById(schoolId);
+    if (!school?.activeBatchId) {
+      return null;
+    }
+
+    return BatchService.getById(schoolId, school.activeBatchId);
   }
 }

@@ -7,6 +7,7 @@ export const ROUTES = {
   STUDENTS: "/students",
   SUBJECTS: "/subjects",
   DEFAULT_EXAMS: "/default-exams",
+  BATCHES: "/batches",
 } as const;
 
 // Dynamic route helpers

@@ -4,6 +4,7 @@ export { UserService } from "./user.service";
 export { SchoolService } from "./school.service";
 export { StudentService, type CreateStudentData } from "./student.service";
 export { SubjectService, type CreateSubjectData } from "./subject.service";
+export { BatchService, type CreateBatchData } from "./batch.service";
 export {
   DefaultExamService,
   type CreateDefaultExamData,
@@ -17,6 +18,5 @@ export type {
   School,
   CreateRegistrationData,
   CreateUserData,
-  CreateSchoolData,
 } from "@/types";
-export type { Student, Subject, Exam } from "@/types/school";
+export type { Student, Subject, Exam, Batch } from "@/types/school";
