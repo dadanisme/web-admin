@@ -46,14 +46,19 @@ export default function InviteTeacherPage() {
       const existingUser = await UserService.getByEmail(email.trim());
 
       if (existingUser) {
-        if (existingUser.schoolId) {
+        if (existingUser.schoolId && existingUser.schoolId !== "demo-school") {
           setError("This teacher is already assigned to a school");
           return;
         }
 
-        // User exists but not assigned to school - assign directly
+        // User exists - assign to school (replacing demo-school if applicable)
         await UserService.assignToSchool(existingUser.id, adminClaims.schoolId);
-        setSuccess(`${email} has been assigned to your school successfully!`);
+        
+        if (existingUser.schoolId === "demo-school") {
+          setSuccess(`${email} has been moved from demo-school to your school successfully!`);
+        } else {
+          setSuccess(`${email} has been assigned to your school successfully!`);
+        }
       } else {
         // Check if registration already exists for this email
         const existingRegistration = await RegistrationService.getByEmail(
@@ -155,6 +160,10 @@ export default function InviteTeacherPage() {
                     • If the teacher already has an account but no school
                     assignment, they&apos;ll be immediately assigned to your
                     school
+                  </li>
+                  <li>
+                    • If the teacher is currently assigned to demo-school,
+                    they&apos;ll be moved to your school
                   </li>
                   <li>
                     • If the teacher doesn&apos;t have an account yet,
