@@ -121,6 +121,9 @@ export default function Home() {
                 <Link href={ROUTES.INVITE}>Invite Teacher by Email</Link>
               </Button>
               <Button asChild variant="outline" className="w-full sm:w-auto">
+                <Link href={ROUTES.BATCHES}>Manage Batches</Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full sm:w-auto">
                 <Link href={ROUTES.STUDENTS}>Manage Students</Link>
               </Button>
               <Button asChild variant="outline" className="w-full sm:w-auto">

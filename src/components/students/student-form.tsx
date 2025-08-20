@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Student } from "@/types/school";
 import { useStudentMutations } from "@/hooks/useStudents";
+import { useBatches } from "@/hooks/useBatches";
 import { studentSchema, type StudentFormData } from "@/lib/validations";
 import {
   Dialog,
@@ -20,6 +21,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -40,11 +48,13 @@ export function StudentForm({
 }: StudentFormProps) {
   const { createStudent, updateStudent, loading, error } =
     useStudentMutations(schoolId);
+  const { batches } = useBatches(schoolId);
 
   const form = useForm<StudentFormData>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
       name: "",
+      batchId: undefined,
     },
   });
 
@@ -54,10 +64,12 @@ export function StudentForm({
       if (student) {
         form.reset({
           name: student.name,
+          batchId: student.batchId || undefined,
         });
       } else {
         form.reset({
           name: "",
+          batchId: undefined,
         });
       }
     }
@@ -100,6 +112,36 @@ export function StudentForm({
                       disabled={loading}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="batchId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Batch</FormLabel>
+                  <Select
+                    onValueChange={(value) => field.onChange(value === "none" ? undefined : value)}
+                    value={field.value || "none"}
+                    disabled={loading}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a batch (optional)" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">No Batch</SelectItem>
+                      {batches.map((batch) => (
+                        <SelectItem key={batch.id} value={batch.id}>
+                          {batch.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

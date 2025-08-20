@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { Batch } from "@/types/school";
-import { SchoolService } from "@/services/firestore";
+import { SchoolService, BatchService } from "@/services/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { COLLECTIONS } from "@/lib/firestore-constants";
 
 // Hook for managing active batch
 export function useActiveBatch(schoolId: string) {
@@ -9,27 +12,55 @@ export function useActiveBatch(schoolId: string) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!schoolId) {
+    if (!schoolId || !db) {
       setLoading(false);
       return;
     }
 
-    const fetchActiveBatch = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const batch = await SchoolService.getActiveBatch(schoolId);
-        setActiveBatch(batch);
-      } catch (error) {
+    setLoading(true);
+    setError(null);
+
+    // Listen to school document for activeBatchId changes
+    const schoolDocRef = doc(db, COLLECTIONS.SCHOOLS, schoolId);
+    const unsubscribe = onSnapshot(
+      schoolDocRef,
+      async (schoolDoc) => {
+        try {
+          if (!schoolDoc.exists()) {
+            setActiveBatch(null);
+            setLoading(false);
+            return;
+          }
+
+          const schoolData = schoolDoc.data();
+          const activeBatchId = schoolData?.activeBatchId;
+
+          if (!activeBatchId) {
+            setActiveBatch(null);
+            setLoading(false);
+            return;
+          }
+
+          // Fetch the active batch details
+          const batch = await BatchService.getById(schoolId, activeBatchId);
+          setActiveBatch(batch);
+          setLoading(false);
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : "Failed to fetch active batch";
+          setError(errorMessage);
+          setLoading(false);
+        }
+      },
+      (error) => {
         const errorMessage =
-          error instanceof Error ? error.message : "Failed to fetch active batch";
+          error instanceof Error ? error.message : "Failed to listen to active batch";
         setError(errorMessage);
-      } finally {
         setLoading(false);
       }
-    };
+    );
 
-    fetchActiveBatch();
+    return unsubscribe;
   }, [schoolId]);
 
   return {
