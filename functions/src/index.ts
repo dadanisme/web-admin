@@ -9,3 +9,5 @@
 
 // Export all functions from their respective modules
 export { onUserSchoolUpdate } from "./users/onUserSchoolUpdate";
+export { writeExamPendingReview } from "./exams/writeExamPendingReview";
+export { writeSubjectPendingReview } from "./exams/writeSubjectPendingReview";

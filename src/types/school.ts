@@ -9,6 +9,9 @@ export interface Subject extends DefaultFirestoreFields {
   name: string;
   passingGrade?: number;
   maxGrade?: number;
+  totalStudentsPassed?: number;
+  totalStudentsFailed?: number;
+  pendingReview?: number;
 }
 
 export interface Student extends DefaultFirestoreFields {
@@ -21,6 +24,9 @@ export interface Exam extends DefaultFirestoreFields {
   name: string;
   maxScore?: number;
   passingScore?: number;
+  totalStudentsPassed?: number;
+  totalStudentsFailed?: number;
+  pendingReview?: number;
 }
 
 export interface ExamResult extends DefaultFirestoreFields {
