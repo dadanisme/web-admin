@@ -22,15 +22,28 @@ export const writeExamPendingReview = onDocumentWritten(
         .collection("exams")
         .doc(examId);
 
-      const studentsSnapshot = await db
+      // Get school document to check activeBatchId
+      const schoolDoc = await db
         .collection("schools")
         .doc(schoolId)
-        .collection("students")
-        .count()
         .get();
 
-      // Get total number of students in the school
-      const totalStudents = studentsSnapshot.data()?.count ?? 0;
+      const schoolData = schoolDoc.data();
+      const activeBatchId = schoolData?.activeBatchId;
+
+      // Get total number of students in the active batch
+      let totalStudents = 0;
+      if (activeBatchId) {
+        const studentsSnapshot = await db
+          .collection("schools")
+          .doc(schoolId)
+          .collection("students")
+          .where("batchId", "==", activeBatchId)
+          .count()
+          .get();
+
+        totalStudents = studentsSnapshot.data()?.count ?? 0;
+      }
 
       // Get exam document to check passingScore
       const examDoc = await examRef.get();
