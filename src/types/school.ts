@@ -12,6 +12,7 @@ export interface Subject extends DefaultFirestoreFields {
   totalStudentsPassed?: number;
   totalStudentsFailed?: number;
   pendingReview?: number;
+  targetExamId?: string;
 }
 
 export interface Student extends DefaultFirestoreFields {

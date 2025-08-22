@@ -31,6 +31,7 @@ export const writeSubjectPendingReview = onDocumentWritten(
       let pendingReview = 0;
       let totalStudentsPassed = 0;
       let totalStudentsFailed = 0;
+      let targetExamId = "";
 
       if (!examsSnapshot.empty) {
         // Get the oldest ungraded exam
@@ -41,6 +42,7 @@ export const writeSubjectPendingReview = onDocumentWritten(
         pendingReview = examData.pendingReview || 0;
         totalStudentsPassed = examData.totalStudentsPassed || 0;
         totalStudentsFailed = examData.totalStudentsFailed || 0;
+        targetExamId = oldestExam.id;
       }
 
       // Update the subject document
@@ -48,6 +50,7 @@ export const writeSubjectPendingReview = onDocumentWritten(
         pendingReview,
         totalStudentsPassed,
         totalStudentsFailed,
+        targetExamId,
       });
 
       logger.info(
