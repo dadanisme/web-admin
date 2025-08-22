@@ -55,6 +55,9 @@ functions/
 │   ├── index.ts        # Functions entry point
 │   ├── config/
 │   │   └── firebase.ts # Firebase Admin initialization
+│   ├── exams/
+│   │   ├── writeExamPendingReview.ts    # Exam statistics updates
+│   │   └── writeSubjectPendingReview.ts # Subject statistics updates
 │   ├── helpers/
 │   │   └── registration-sync.ts # Database operation helpers
 │   └── users/
@@ -216,7 +219,29 @@ npm run admin-claims get user@example.com
 
 ```
 schools/{schoolId}/
-  - (future nested collections)
+  - activeBatchId: string (references active batch)
+  - students/{studentId}
+    - name: string
+    - batchId: string (must match school's activeBatchId for active students)
+    - photoURL?: string
+  - subjects/{subjectId}
+    - name: string
+    - pendingReview: number (from oldest ungraded exam)
+    - totalStudentsPassed: number (from oldest ungraded exam)
+    - totalStudentsFailed: number (from oldest ungraded exam)
+    - targetExamId: string (ID of oldest ungraded exam)
+    - exams/{examId}
+      - name: string
+      - maxScore?: number
+      - passingScore?: number
+      - pendingReview: number (students not yet graded)
+      - isDone: boolean (all students graded)
+      - totalStudentsPassed: number (students >= passingScore)
+      - totalStudentsFailed: number (students < passingScore)
+      - examResults/{examResultId}
+        - studentId: string
+        - score: number
+        - comment?: string
 
 users/{userId}
   - schoolId: string | null (initially null)
@@ -308,3 +333,34 @@ All routes are defined in `src/lib/paths.ts` as the `ROUTES` constant to avoid h
 - Helper functions: Database query and batch update operations
 
 **Location**: `functions/src/users/onUserSchoolUpdate.ts`
+
+### writeExamPendingReview Function
+
+**Purpose**: Automatically updates exam statistics when exam results are added or modified.
+
+**Trigger**: `onDocumentWritten("schools/{schoolId}/subjects/{subjectId}/exams/{examId}/examResults/{examResultId}")`
+
+**Behavior**:
+
+- Counts total students in the school's active batch (filtered by `activeBatchId`)
+- Counts graded exam results (results with scores > 0)
+- Calculates pass/fail statistics based on exam's `passingScore`
+- Updates exam document with: `pendingReview`, `isDone`, `totalStudentsPassed`, `totalStudentsFailed`
+- Uses efficient `.count()` queries for optimal performance
+
+**Location**: `functions/src/exams/writeExamPendingReview.ts`
+
+### writeSubjectPendingReview Function
+
+**Purpose**: Automatically updates subject statistics based on the oldest ungraded exam.
+
+**Trigger**: `onDocumentWritten("schools/{schoolId}/subjects/{subjectId}/exams/{examId}")`
+
+**Behavior**:
+
+- Finds the oldest ungraded exam (where `isDone == false`, ordered by `createdAt`)
+- Copies statistics from that exam to the subject document
+- Updates subject with: `pendingReview`, `totalStudentsPassed`, `totalStudentsFailed`, `targetExamId`
+- Prioritizes exams that need attention first
+
+**Location**: `functions/src/exams/writeSubjectPendingReview.ts`
