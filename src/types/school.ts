@@ -19,11 +19,14 @@ export interface Student extends DefaultFirestoreFields {
 
 export interface Exam extends DefaultFirestoreFields {
   name: string;
+  maxScore?: number;
+  passingScore?: number;
 }
 
 export interface ExamResult extends DefaultFirestoreFields {
   studentId: string;
   score: number;
+  comment?: string;
 }
 
 export interface Batch extends DefaultFirestoreFields {

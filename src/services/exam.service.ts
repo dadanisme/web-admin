@@ -91,6 +91,8 @@ export class ExamService {
       ),
       {
         ...data,
+        maxScore: 100,
+        passingScore: 75,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       }
