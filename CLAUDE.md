@@ -61,11 +61,9 @@ functions/
 │   ├── helpers/
 │   │   └── registration-sync.ts # Database operation helpers
 │   └── users/
-│       ├── helpers.ts               # User-specific helpers
 │       ├── writeUserData.ts         # User data operations
 │       ├── writeUserRegistration.ts # Auto-registration creation
-│       ├── writeRegistrationSchool.ts # Registration school sync
-│       └── onUserSchoolUpdate.ts    # User update triggers
+│       └── writeUserSchool.ts       # Registration to user school sync
 ├── package.json        # Functions dependencies
 └── tsconfig.json      # Functions TypeScript config
 ```
@@ -331,29 +329,23 @@ All routes are defined in `src/lib/paths.ts` as the `ROUTES` constant to avoid h
 
 **Location**: `functions/src/users/writeUserData.ts`
 
-### writeRegistrationSchool Function
+### writeUserSchool Function
 
-**Purpose**: Automatically syncs schoolId from user documents to their registrations when a user is assigned to a school.
+**Purpose**: Automatically syncs schoolId from registration documents to user documents when a registration is assigned to a school.
 
-**Trigger**: `onDocumentUpdated("users/{userId}")`
+**Trigger**: `onDocumentUpdated("registrations/{registrationId}")`
 
 **Behavior**:
 
-- Listens for changes to user documents
+- Listens for changes to registration documents
 - Detects when `schoolId` field is added or modified
-- Finds all registrations for that user
-- Updates all registrations with the new `schoolId`
+- Updates the corresponding user document with the new `schoolId`
+- Uses server timestamps for updatedAt fields
 - Logs the sync operation for monitoring
 
-**Use Case**: When a teacher logs into the iOS app after being invited, their user document gets updated with a `schoolId`. This function ensures their existing registration records are automatically updated to reflect the school assignment.
+**Use Case**: When an admin assigns a schoolId to a registration (during approval), this function ensures the user document is automatically updated with the school assignment.
 
-**Structure**:
-
-- Main function: `syncUserSchoolToRegistrations()` - Contains business logic (in helpers.ts)
-- Trigger function: `writeRegistrationSchool()` - Firebase trigger wrapper
-- Helper functions: Database query and batch update operations
-
-**Location**: `functions/src/users/writeRegistrationSchool.ts`
+**Location**: `functions/src/users/writeUserSchool.ts`
 
 ### writeExamPendingReview Function
 
