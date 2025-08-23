@@ -61,8 +61,11 @@ functions/
 │   ├── helpers/
 │   │   └── registration-sync.ts # Database operation helpers
 │   └── users/
-│       ├── helpers.ts          # User-specific helpers
-│       └── onUserSchoolUpdate.ts # User update triggers
+│       ├── helpers.ts               # User-specific helpers
+│       ├── writeUserData.ts         # User data operations
+│       ├── writeUserRegistration.ts # Auto-registration creation
+│       ├── writeRegistrationSchool.ts # Registration school sync
+│       └── onUserSchoolUpdate.ts    # User update triggers
 ├── package.json        # Functions dependencies
 └── tsconfig.json      # Functions TypeScript config
 ```
@@ -310,7 +313,25 @@ All routes are defined in `src/lib/paths.ts` as the `ROUTES` constant to avoid h
 
 ## Firebase Cloud Functions
 
-### onUserUpdated Function
+### writeUserData Function
+
+**Purpose**: Creates user documents in Firestore when users sign up through Firebase Auth.
+
+**Trigger**: `functions.auth.user().onCreate()` (Firebase Auth trigger)
+
+**Behavior**:
+
+- Triggers when a new user signs up through Firebase Authentication
+- Extracts user data from Firebase Auth (uid, email, displayName, photoURL)
+- Creates a user document in `users/{userId}` collection
+- Sets initial user properties like `didCompleteOnboarding: false`
+- Uses server timestamps for createdAt and updatedAt fields
+
+**Use Case**: When a teacher first signs up through the iOS app, this function creates their user document in Firestore, which then triggers the registration creation process.
+
+**Location**: `functions/src/users/writeUserData.ts`
+
+### writeRegistrationSchool Function
 
 **Purpose**: Automatically syncs schoolId from user documents to their registrations when a user is assigned to a school.
 
@@ -328,11 +349,11 @@ All routes are defined in `src/lib/paths.ts` as the `ROUTES` constant to avoid h
 
 **Structure**:
 
-- Main function: `syncUserSchoolToRegistrations()` - Contains business logic
-- Trigger function: `onUserUpdated()` - Firebase trigger wrapper
+- Main function: `syncUserSchoolToRegistrations()` - Contains business logic (in helpers.ts)
+- Trigger function: `writeRegistrationSchool()` - Firebase trigger wrapper
 - Helper functions: Database query and batch update operations
 
-**Location**: `functions/src/users/onUserSchoolUpdate.ts`
+**Location**: `functions/src/users/writeRegistrationSchool.ts`
 
 ### writeExamPendingReview Function
 
@@ -364,3 +385,28 @@ All routes are defined in `src/lib/paths.ts` as the `ROUTES` constant to avoid h
 - Prioritizes exams that need attention first
 
 **Location**: `functions/src/exams/writeSubjectPendingReview.ts`
+
+### writeUserRegistration Function
+
+**Purpose**: Automatically creates a registration document when a new user is created.
+
+**Trigger**: `onDocumentCreated("users/{userId}")`
+
+**Behavior**:
+
+- Triggers when a new user document is created in the users collection
+- Extracts user data (email, displayName) from the created user document
+- Creates a corresponding registration document with status "pending"
+- If user already has a schoolId, sets registration status to "approved"
+- Uses server timestamps for createdAt and updatedAt fields
+- Logs the registration creation for monitoring
+
+**Use Case**: When a teacher first signs up through the iOS app, this function automatically creates their registration entry in the system, making them visible to admins for approval.
+
+**Data Mapping**:
+- `userId`: Document ID from users collection
+- `userEmail`: Extracted from user.email
+- `userName`: Extracted from user.displayName
+- `status`: "pending" (default) or "approved" (if user has schoolId)
+
+**Location**: `functions/src/users/writeUserRegistration.ts`
