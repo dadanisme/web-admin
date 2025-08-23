@@ -3,6 +3,14 @@
     {
       "source": "functions",
       "codebase": "default",
+      "blockingFunctions": {
+        "triggers": [
+          {
+            "eventType": "beforeUserCreated",
+            "function": "writeUserData"
+          }
+        ]
+      },
       "ignore": [
         "node_modules",
         ".git",

@@ -18,6 +18,20 @@ export const writeUserRegistration = onDocumentCreated(
     }
 
     try {
+      // Check if registration already exists for this user or email
+      const existingRegistrations = await db
+        .collection("registrations")
+        .where("userId", "==", userId)
+        .limit(1)
+        .get();
+
+      if (!existingRegistrations.empty) {
+        logger.info(
+          `Registration already exists for user ${userId}, skipping creation`
+        );
+        return;
+      }
+
       // Create registration data from user data
       const registrationData = {
         userId: userId,

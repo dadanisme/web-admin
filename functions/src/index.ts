@@ -10,6 +10,6 @@
 // Export all functions from their respective modules
 export { writeUserData } from "./users/writeUserData";
 export { writeUserRegistration } from "./users/writeUserRegistration";
-export { writeRegistrationSchool } from "./users/writeRegistrationSchool";
+export { writeUserSchool } from "./users/writeUserSchool";
 export { writeExamPendingReview } from "./exams/writeExamPendingReview";
 export { writeSubjectPendingReview } from "./exams/writeSubjectPendingReview";
