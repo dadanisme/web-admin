@@ -1,4 +1,5 @@
-import { db, admin } from "../config/firebase";
+import { FieldValue } from "firebase-admin/firestore";
+import { db } from "../config/firebase";
 import * as logger from "firebase-functions/logger";
 
 /**
@@ -23,7 +24,7 @@ export async function batchUpdateRegistrations(
   registrations.forEach((doc) => {
     batch.update(doc.ref, {
       schoolId: schoolId,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
     });
   });
 

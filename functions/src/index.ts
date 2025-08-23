@@ -8,6 +8,8 @@
  */
 
 // Export all functions from their respective modules
-export { onUserSchoolUpdate } from "./users/onUserSchoolUpdate";
+export { writeUserData } from "./users/writeUserData";
+export { writeUserRegistration } from "./users/writeUserRegistration";
+export { writeRegistrationSchool } from "./users/writeRegistrationSchool";
 export { writeExamPendingReview } from "./exams/writeExamPendingReview";
 export { writeSubjectPendingReview } from "./exams/writeSubjectPendingReview";

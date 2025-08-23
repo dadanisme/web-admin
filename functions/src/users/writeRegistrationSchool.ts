@@ -6,7 +6,7 @@ import { syncUserSchoolToRegistrations } from "./helpers";
  * Firebase trigger that listens to user document updates
  * Triggered when users/{userId} document is updated
  */
-export const onUserSchoolUpdate = onDocumentUpdated(
+export const writeRegistrationSchool = onDocumentUpdated(
   "users/{userId}",
   async (event) => {
     const userId = event.params.userId;
