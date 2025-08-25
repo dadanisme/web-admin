@@ -21,6 +21,7 @@ export const writeUserData = beforeUserCreated(async (event) => {
     if (email) {
       const existingRegistrations = await db
         .collection("registrations")
+        // by email because it is possible userId is not set yet -- when an email invited, but that user is not created yet
         .where("userEmail", "==", email)
         .limit(1)
         .get();

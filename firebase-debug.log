@@ -1,0 +1,33 @@
+[debug] [2025-08-25T00:45:36.417Z] ----------------------------------------------------------------------
+[debug] [2025-08-25T00:45:36.421Z] Command:       /Users/dadanisme/.nvm/versions/node/v22.14.0/bin/node /Users/dadanisme/.nvm/versions/node/v22.14.0/bin/firebase deploy --only functions:writeUserdata,writeUserRegistration
+[debug] [2025-08-25T00:45:36.422Z] CLI Version:   14.14.0
+[debug] [2025-08-25T00:45:36.422Z] Platform:      darwin
+[debug] [2025-08-25T00:45:36.422Z] Node Version:  v22.14.0
+[debug] [2025-08-25T00:45:36.422Z] Time:          Mon Aug 25 2025 08:45:36 GMT+0800 (Central Indonesia Time)
+[debug] [2025-08-25T00:45:36.423Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-08-25T00:45:36.423Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2025-08-25T00:45:36.517Z] Field "/functions" in "firebase.json" is possibly invalid: must be object
+[debug] [2025-08-25T00:45:36.517Z] Object "/functions/0" in "firebase.json" has unknown property: {"additionalProperty":"blockingFunctions"}
+[debug] [2025-08-25T00:45:36.517Z] Field "/functions" in "firebase.json" is possibly invalid: must match a schema in anyOf
+[debug] [2025-08-25T00:45:36.520Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-08-25T00:45:36.520Z] > authorizing via signed-in user (huntercitation@gmail.com)
+[debug] [2025-08-25T00:45:36.520Z] [iam] checking project team-03-a3c10 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-08-25T00:45:36.520Z] Checked if tokens are valid: false, expires at: 1755963879893
+[debug] [2025-08-25T00:45:36.520Z] Checked if tokens are valid: false, expires at: 1755963879893
+[debug] [2025-08-25T00:45:36.520Z] > refreshing access token with scopes: []
+[debug] [2025-08-25T00:45:36.521Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-08-25T00:45:36.521Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-08-25T00:45:36.645Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-08-25T00:45:36.646Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-08-25T00:45:36.656Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/team-03-a3c10:testIamPermissions [none]
+[debug] [2025-08-25T00:45:36.656Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/team-03-a3c10:testIamPermissions x-goog-quota-user=projects/team-03-a3c10
+[debug] [2025-08-25T00:45:36.656Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/team-03-a3c10:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-08-25T00:45:37.030Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2025-08-25T00:45:37.030Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2025-08-25T00:45:37.046Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/team-03-a3c10:testIamPermissions 200
+[debug] [2025-08-25T00:45:37.046Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/team-03-a3c10:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-08-25T00:45:37.046Z] Checked if tokens are valid: true, expires at: 1756086335646
+[debug] [2025-08-25T00:45:37.046Z] Checked if tokens are valid: true, expires at: 1756086335646
+[debug] [2025-08-25T00:45:37.046Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/team-03-a3c10/serviceAccounts/team-03-a3c10@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-08-25T00:45:37.046Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/team-03-a3c10/serviceAccounts/team-03-a3c10@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}

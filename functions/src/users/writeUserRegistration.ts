@@ -25,7 +25,14 @@ export const writeUserRegistration = onDocumentCreated(
         .limit(1)
         .get();
 
-      if (!existingRegistrations.empty) {
+      // Also check if registration already exists for this email
+      const existingRegistrationsByEmail = await db
+        .collection("registrations")
+        .where("userEmail", "==", userData.email)
+        .limit(1)
+        .get();
+
+      if (!existingRegistrations.empty || !existingRegistrationsByEmail.empty) {
         logger.info(
           `Registration already exists for user ${userId}, skipping creation`
         );
