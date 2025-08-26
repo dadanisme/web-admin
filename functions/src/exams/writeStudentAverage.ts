@@ -1,7 +1,57 @@
 import { onDocumentWritten } from "firebase-functions/v2/firestore";
+import { onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { db } from "../config/firebase";
 import { AggregateField, FieldValue } from "firebase-admin/firestore";
+
+/**
+ * Web function that writes students average score for a given schoolId
+ * This will used locally to populate data
+ */
+export const writeStudentAverageWeb = onRequest(async (req, res) => {
+  const { schoolId } = req.query;
+
+  if (!schoolId || typeof schoolId !== "string") {
+    res.status(400).send("schoolId is required");
+    return;
+  }
+
+  const studentsSnapshot = await db
+    .collection("schools")
+    .doc(schoolId)
+    .collection("students")
+    .select() // selecting none, we only need the document id
+    .get();
+
+  const studentIds = studentsSnapshot.docs.map((doc) => doc.id);
+
+  for (const studentId of studentIds) {
+    const examResultsSnapshot = await db
+      .collectionGroup("examResults")
+      .where("studentId", "==", studentId)
+      .aggregate({
+        averageScore: AggregateField.average("score"),
+      })
+      .get();
+
+    const averageScore = examResultsSnapshot.data()?.averageScore ?? null;
+
+    await db
+      .collection("schools")
+      .doc(schoolId)
+      .collection("students")
+      .doc(studentId)
+      .update({
+        averageScore,
+      });
+
+    logger.info(
+      `Updated student ${studentId} averageScore=${averageScore} in school ${schoolId}`
+    );
+  }
+
+  res.send("Done");
+});
 
 /**
  * Firebase trigger that listens to examResult document writes
