@@ -13,3 +13,4 @@ export { writeUserRegistration } from "./users/writeUserRegistration";
 export { writeUserSchool } from "./users/writeUserSchool";
 export { writeExamPendingReview } from "./exams/writeExamPendingReview";
 export { writeSubjectPendingReview } from "./exams/writeSubjectPendingReview";
+export { writeStudentAverage } from "./exams/writeStudentAverage";
